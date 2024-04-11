@@ -21,7 +21,7 @@ jobs:
 
       - name: Build
         run: npm run build
-          touch .nojekyll  # 通知githubpages不要使用Jekyll处理这个站点，不知道为啥不生效，就手动搞了
+
       - name: Deploy
           # 将构建产物 commit 到一个分支上，用于发布静态站点资源
           # https://github.com/peaceiris/actions-gh-pages
