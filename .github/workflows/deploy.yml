@@ -1,54 +1,37 @@
-# 将静态内容部署到 GitHub Pages 的简易工作流程
-name: Deploy static content to Pages
+# .github > workflows > deploy.yml
+name: Deploy
 
 on:
-  # 仅在推送到默认分支时运行。
   push:
-    branches: ['main']
-
-  # 这个选项可以使你手动在 Action tab 页面触发工作流
-  workflow_dispatch:
-
-# 设置 GITHUB_TOKEN 的权限，以允许部署到 GitHub Pages。
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# 允许一个并发的部署
-concurrency:
-  group: 'pages'
-  cancel-in-progress: true
+    branches:
+      - master
 
 jobs:
-  # 单次部署的工作描述
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
+      - uses: actions/checkout@v3
         with:
-          version: 8
-      - name: Set up Node
-        uses: actions/setup-node@v4
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
         with:
-          node-version: 18
-          cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm install
+          node-version: 16
+          cache: npm
+      - run: npm install --frozen-lockfile
+
       - name: Build
-        run: pnpm run build
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        run: npm run docs:build
+
+      - name: Deploy
+          # 将构建产物 commit 到一个分支上，用于发布静态站点资源
+          # https://github.com/peaceiris/actions-gh-pages
+        #不要将peaceiris改为自己的仓库名，我单纯的以为这个需要改成自己的仓库名，部署上去就build失败了，需引用该仓库的配置
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          # Upload dist repository
-          path: '.vitepress/dist'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
+          # Github 会在 workflow 中自动生成 GIHUBT_TOKEN，用于认证 workflow 的运行
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # 静态资源目录设置
+          publish_dir: .vitepress/dist
+          # 默认发布到 gh-pages 分支上，可以指定特定的发布分支（不能选拉取代码的分支）
+          publish_branch: gh-pages
+          full_commit_message: ${{ github.event.head_commit.message }}
