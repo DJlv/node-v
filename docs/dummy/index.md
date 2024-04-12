@@ -3,6 +3,9 @@ layout: home
 hero:
   name: dummy
   text: 机械臂
+  image:
+    src: /dummy/img.png
+    alt: 背景图
 #  tagline: 
 #  actions:
 #    - theme: brand
@@ -13,6 +16,9 @@ hero:
 #      link: https://github.com/vuejs/vitepress
 
 features:
+  - title: Code
+    details: 选择永远大于努力
+    link: /docs/dummy/code
   - title: pcb
     details: 选择永远大于努力
     link: /docs/dummy/pcb
