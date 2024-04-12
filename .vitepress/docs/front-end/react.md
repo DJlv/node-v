@@ -88,20 +88,20 @@ yarn config set registry https://registry.npmmirror.com
 **条件渲染**
 
 ```jsx
-    import { useState } from "react";
+    import {useState} from ".vitepress/docs/front-end/react";
 
-    const [isShow, setIsShow] = useState(false); // 控制内容显示隐藏
-    const handleClick = () => {
+const [isShow, setIsShow] = useState(false); // 控制内容显示隐藏
+const handleClick = () => {
     setIsShow(!isShow);  // 修改状态
-    };
-    return (
+};
+return (
     <div className="App">
-      {/* {isShow && <div>应该展示的内容</div>} */}
-      {/* 三目运算符 */}
-      {isShow ? <div>应该展示的内容</div> : null}
-      <button onClick={handleClick}>点击修改显隐</button>
+        {/* {isShow && <div>应该展示的内容</div>} */}
+        {/* 三目运算符 */}
+        {isShow ? <div>应该展示的内容</div> : null}
+        <button onClick={handleClick}>点击修改显隐</button>
     </div>
-    );
+);
 ```
 
 **条件渲染+函数调用**
