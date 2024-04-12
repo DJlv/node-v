@@ -13,8 +13,8 @@ export default withMermaid({
   base:'./',
   // srcDir: "./docs", // 配置md文档的映射目录，默认根路径
   head: [["link", { rel: "icon", href: "/logo.svg" }]],
-  title: "AlbertZhang的文档网站",
-  description: "A bugDesigner Site",
+  title: "文档网站",
+  description: "",
   themeConfig: {
     outlineTitle: "文章目录",
     outline: [2, 6],
@@ -125,7 +125,7 @@ export default withMermaid({
     ],
     // 底部配置
     footer: {
-      copyright: "Copyright@ 2023 Albert Zhang",
+      copyright: "",
     },
     // 设置搜索框的样式
     search: {
