@@ -88,7 +88,7 @@ yarn config set registry https://registry.npmmirror.com
 **条件渲染**
 
 ```jsx
-    import {useState} from ".vitepress/docs/front-end/react";
+    import {useState} from "./react";
 
 const [isShow, setIsShow] = useState(false); // 控制内容显示隐藏
 const handleClick = () => {
