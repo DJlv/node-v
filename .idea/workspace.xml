@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b29166ed-8979-4c9d-8214-a0f1cc532ab3" name="Changes" comment="init">
-      <change beforePath="$PROJECT_DIR$/.vitepress/config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/.vitepress/config.mjs" afterDir="false" />
-    </list>
+    <list default="true" id="b29166ed-8979-4c9d-8214-a0f1cc532ab3" name="Changes" comment="init" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -58,6 +56,9 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\code\vue\node\.github\workflows" />
       <recent name="E:\code\vue\node\.vitepress\theme" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\code\vue\node\.vitepress" />
     </key>
   </component>
   <component name="RunManager" selected="npm.docs:dev">
@@ -290,7 +291,47 @@
       <option name="project" value="LOCAL" />
       <updated>1712901120310</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="init">
+      <option name="closed" value="true" />
+      <created>1712901408220</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1712901408220</updated>
+    </task>
+    <task id="LOCAL-00026" summary="init">
+      <option name="closed" value="true" />
+      <created>1712901540714</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1712901540714</updated>
+    </task>
+    <task id="LOCAL-00027" summary="init">
+      <option name="closed" value="true" />
+      <created>1712901561456</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1712901561456</updated>
+    </task>
+    <task id="LOCAL-00028" summary="init">
+      <option name="closed" value="true" />
+      <created>1712901693928</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1712901693928</updated>
+    </task>
+    <task id="LOCAL-00029" summary="init">
+      <option name="closed" value="true" />
+      <created>1712901765223</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1712901765223</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
