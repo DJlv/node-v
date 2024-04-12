@@ -138,16 +138,16 @@
 }
 
 /* 自定义侧边栏在最左边，右边撑满宽度 */
-.VPDoc .container {
-  margin: 0 !important;
-}
-@media (min-width: 960px) {
-  .VPDoc:not(.has-sidebar) .content {
-    max-width: 1552px !important;
-  }
-}
+/*.VPDoc .container {*/
+/*  margin: 0 !important;*/
+/*}*/
+/*@media (min-width: 960px) {*/
+/*  .VPDoc:not(.has-sidebar) .content {*/
+/*    max-width: 1552px !important;*/
+/*  }*/
+/*}*/
 .VPDoc.has-aside .content-container {
-  max-width: 1488px !important;
+  max-width: 968px !important;
 }
 @media (min-width: 960px) {
   .VPDoc:not(.has-sidebar) .container {
@@ -159,10 +159,7 @@
 .aside-container {
   position: fixed;
   top: 0;
-  padding-top: calc(
-    var(--vp-nav-height) + var(--vp-layout-top-height, 0px) +
-      var(--vp-doc-top-height, 0px) + 10px
-  ) !important;
+
   width: 224px;
   height: 100vh;
   overflow-x: hidden;
@@ -175,4 +172,69 @@
   margin: 0px 0 16px;
   padding-top: 24px;
   border: none;
+}
+
+
+
+@media (min-width: 1440px)
+{
+  .VPNavBar.has-sidebar .title {
+     padding-left: 5px !important;
+     width: 10px !important;
+  }
+}
+
+@media (min-width: 1440px)
+{
+  .VPSidebar {
+     padding-left:  40px !important;
+     width:  250px !important;
+  }
+}
+
+
+@media (min-width: 1160px)
+{
+  .VPContent.has-sidebar {
+    margin:  5px !important;
+    padding-left: 250px !important;
+  }
+}
+
+.VPDoc.has-aside .content-container {
+  max-width: 888px !important;
+}
+
+
+
+
+.aside {
+  position: relative;
+  display: none;
+  order: 2;
+  flex-grow: 1;
+  padding-left: 32px !important;
+  width: 100% !important;
+  max-width: 100px !important;
+}
+
+
+.VPDoc.has-aside .content-container {
+  max-width: 1120px !important;
+}
+
+
+@media (min-width: 1440px)
+{
+  .VPNavBar.has-sidebar .divider[data-v-4adc6b33] {
+     padding-left:  250px !important;
+  }
+}
+
+@media (min-width: 1440px)
+{
+  .VPNavBar.has-sidebar .content[data-v-4adc6b33] {
+     padding-right: 32px !important;
+     padding-left:  250px !important;
+  }
 }
