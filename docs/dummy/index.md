@@ -6,15 +6,6 @@ hero:
   image:
     src: /dummy/img.png
     alt: 背景图
-#  tagline: 
-#  actions:
-#    - theme: brand
-#      text: Get Started
-#      link: /guide/what-is-vitepress
-#    - theme: alt
-#      text: View on GitHub
-#      link: https://github.com/vuejs/vitepress
-
 features:
   - title: Code
     details: 选择永远大于努力
