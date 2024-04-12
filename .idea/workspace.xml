@@ -5,7 +5,40 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b29166ed-8979-4c9d-8214-a0f1cc532ab3" name="Changes" comment="init">
+      <change afterPath="$PROJECT_DIR$/docs/dummy/3d打印.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/dummy/cnc.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/dummy/pcb.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vitepress/config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/.vitepress/config.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Tutorial/electron_package.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Tutorial/vitepress.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/back-end/elasticsearch.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/back-end/integrate-tech.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/back-end/mybatis-plus.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/back-end/rabbitmq.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/back-end/springboot-template.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/front-end/react.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/math-model/classify.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/math-model/data-ana.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/math-model/eval.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/math-model/forecast.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/math-model/optimize.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/my-index/reason.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/net-sec/info-collect.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/net-sec/intranet-pene.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/net-sec/vul-reproduce.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/net-sec/web-aad.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/python/base.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/python/spider.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/spiders/Bilibili.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/spiders/dlt.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/spiders/middle_exam.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/tools/docker.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/tools/git.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/tools/iTime_docs.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/tools/icons.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/tools/linux-commands.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/tools/tips.md" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,6 +93,7 @@
       <recent name="E:\code\vue\node\.vitepress\theme" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\code\vue\node" />
       <recent name="E:\code\vue\node\.vitepress" />
     </key>
   </component>
@@ -341,7 +375,23 @@
       <option name="project" value="LOCAL" />
       <updated>1712901836102</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="init">
+      <option name="closed" value="true" />
+      <created>1712903642573</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1712903642573</updated>
+    </task>
+    <task id="LOCAL-00032" summary="init">
+      <option name="closed" value="true" />
+      <created>1712903673224</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1712903673224</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
