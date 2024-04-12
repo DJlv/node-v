@@ -10,7 +10,7 @@ import { withMermaid } from "vitepress-plugin-mermaid";
 
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
-  base:'./',
+  base:'../',
   // srcDir: "./docs", // 配置md文档的映射目录，默认根路径
   head: [["link", { rel: "icon", href: "/logo.svg" }]],
   title: "文档网站",
@@ -25,7 +25,7 @@ export default withMermaid({
     nav: [
       {
         text: "前端",
-        items: [{ text: "React", link: ".vitepress/dist/docs/front-end/react" }],
+        items: [{ text: "React", link: "/docs/front-end/react" }],
       },
       {
         text: "后端",
