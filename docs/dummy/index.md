@@ -1,6 +1,6 @@
 ---
 # https://vitepress.dev/reference/default-theme-home-page
-layout: home
+layout: dummy
 
 hero:
   name: "文档站"
@@ -22,4 +22,3 @@ features:
   - title: 🤔 思考 
     details: 学会思考，不要人云亦云
 ---
-
