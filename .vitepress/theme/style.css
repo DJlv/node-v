@@ -43,7 +43,7 @@
  *   in custom container, badges, etc.
  * -------------------------------------------------------------------------- */
 
- :root {
+:root {
   --vp-c-default-1: var(--vp-c-gray-1);
   --vp-c-default-2: var(--vp-c-gray-2);
   --vp-c-default-3: var(--vp-c-gray-3);
@@ -137,51 +137,42 @@
   --docsearch-primary-color: var(--vp-c-brand-1) !important;
 }
 
-
-/*自定义*/
-@media (min-width: 250px)
-{
-    .VPNavBar.has-sidebar .title {
-        padding-left: 20px !important;
-        max-width: 250px !important;
-    }
+/* 自定义侧边栏在最左边，右边撑满宽度 */
+.VPDoc .container {
+  margin: 0 !important;
+}
+@media (min-width: 960px) {
+  .VPDoc:not(.has-sidebar) .content {
+    max-width: 1552px !important;
+  }
+}
+.VPDoc.has-aside .content-container {
+  max-width: 1488px !important;
+}
+@media (min-width: 960px) {
+  .VPDoc:not(.has-sidebar) .container {
+    display: flex;
+    justify-content: center;
+    max-width: 1562px !important;
+  }
+}
+.aside-container {
+  position: fixed;
+  top: 0;
+  padding-top: calc(
+    var(--vp-nav-height) + var(--vp-layout-top-height, 0px) +
+      var(--vp-doc-top-height, 0px) + 10px
+  ) !important;
+  width: 224px;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
 }
 
-@media (min-width: 1440px)
-{
-    .VPSidebar {
-         padding-left:  20px !important;
-        max-width: 250px !important;
-    }
-}
-
-
-@media (min-width: 1440px)
-{
-.VPNavBar.has-sidebar .content[data-v-84a11e99] {
-     padding-right: 10px !important;
-     padding-left:  10px !important;
-}
-}
-
-
-@media (min-width: 960px)
- {
-     .VPContent.has-sidebar[data-v-52f1cd35] {
-         margin:  0 0;
-        padding-left: 10px !important;
-     }
- }
-
-.VPDoc.has-aside .content-container[data-v-343c73d6] {
-    padding-left:  250px !important;
-    max-width: 1200px;
-}
-
-@media (min-width: 1440px)
-{
-    .VPContent.has-sidebar[data-v-52f1cd35] {
-        padding-right: 0px !important;
-        padding-left: 0px !important;
-    }
+/* 自定义h2的间距 */
+.vp-doc h2 {
+  margin: 0px 0 16px;
+  padding-top: 24px;
+  border: none;
 }
