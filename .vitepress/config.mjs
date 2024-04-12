@@ -25,24 +25,26 @@ export default withMermaid({
     // 顶部导航栏配置
     nav: [
       {
-        text: "dummy",
-        link: "/docs/dummy/index"
+        text: "工程",
+        items: [
+          { text: "dummy", link: "/docs/dummy/index" }
+        ]
       },
     ],
     // 侧边栏配置，这个函数自动生成侧边栏
-    sidebar: {
-      "/docs/dummy/index": set_sidebar("/docs/dummy/"),
-      "/docs/dummy/1-pcb": set_sidebar("/docs/dummy/"),
-      "/docs/dummy/2-3d打印": set_sidebar("/docs/dummy/"),
-      "/docs/dummy/3-cnc": set_sidebar("/docs/dummy/"),
-      "/docs/dummy/4-dummy问题": set_sidebar("/docs/dummy/"),
-    },
+    // sidebar: {
+    //   "/docs/dummy/index": set_sidebar("/docs/dummy/"),
+    //   "/docs/dummy/1-pcb": set_sidebar("/docs/dummy/"),
+    //   "/docs/dummy/2-3d打印": set_sidebar("/docs/dummy/"),
+    //   "/docs/dummy/3-cnc": set_sidebar("/docs/dummy/"),
+    //   "/docs/dummy/4-dummy问题": set_sidebar("/docs/dummy/"),
+    // },
 
 
     navbar: true, //开启导航栏，我设置成false也没啥用不知道为啥
-    // sidebar: false, // 关闭侧边栏
+    sidebar: false, // 关闭侧边栏
     lastUpdated: true, // 显示上次修改时间
-    // aside: "left", // 设置右侧侧边栏在左侧显示
+    aside: "left", // 设置右侧侧边栏在左侧显示
     // 社交链接，内置的都是国外的，国内只能通过svg设置
     socialLinks: [
       { icon: "github", link: "https://github.com/DJlv" }
