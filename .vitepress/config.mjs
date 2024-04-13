@@ -30,12 +30,7 @@ export default withMermaid({
           { text: "dummy", link: "/docs/dummy/index" }
         ]
       },
-      {
-        text: "工具",
-        items: [
-          { text: "备忘网址", link: "/docs/address/index" }
-        ]
-      }
+      { text: "工具",link: "/docs/address/index" }
     ],
 
 
