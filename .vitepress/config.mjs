@@ -42,7 +42,7 @@ export default withMermaid({
     // 社交链接，内置的都是国外的，国内只能通过svg设置
     socialLinks: [
       { icon: "github", link: "https://github.com/DJlv" },
-      {icon: " ",link: "https://vitepress.dev/zh/guide/what-is-vitepress"}
+      {icon: "V-P",link: "https://vitepress.dev/zh/guide/what-is-vitepress"}
     ],
     // 底部配置
     footer: {
