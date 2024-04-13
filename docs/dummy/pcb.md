@@ -5,6 +5,10 @@
 
 
 <script setup>
-import pcb from "./pcb.vue"
+import pcb from "./pcb/pcb.vue"
 </script>
 <pcb/>
+
+
+
+##

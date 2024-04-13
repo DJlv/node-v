@@ -5,17 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b29166ed-8979-4c9d-8214-a0f1cc532ab3" name="Changes" comment="dummy文档版本init">
-      <change afterPath="$PROJECT_DIR$/docs/address/address.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/address/各种软件使用.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/dummy/pcb.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.vitepress/config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/.vitepress/config.mjs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vitepress/theme/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/.vitepress/theme/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vitepress/theme/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/.vitepress/theme/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/address/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/address/index.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/dummy/pcb.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/dummy/pcb.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -121,7 +112,7 @@
       <updated>1709353700030</updated>
       <workItem from="1712882717843" duration="6081000" />
       <workItem from="1712979302142" duration="103000" />
-      <workItem from="1712979413846" duration="8725000" />
+      <workItem from="1712979413846" duration="9407000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -491,7 +482,15 @@
       <option name="project" value="LOCAL" />
       <updated>1712937647735</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="dummy文档版本init">
+      <option name="closed" value="true" />
+      <created>1712992665575</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1712992665575</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
