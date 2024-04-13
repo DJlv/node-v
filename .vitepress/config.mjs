@@ -11,8 +11,6 @@ import { withMermaid } from "vitepress-plugin-mermaid";
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
   base:'/node-v/',
-  // base:'./',
-  // srcDir: "./docs", // 配置md文档的映射目录，默认根路径
   head: [["link", { rel: "icon", href: "/logo.svg" }]],
   title: "文档网站",
   description: "",
@@ -42,7 +40,7 @@ export default withMermaid({
     // 社交链接，内置的都是国外的，国内只能通过svg设置
     socialLinks: [
       { icon: "github", link: "https://github.com/DJlv" },
-      {icon: "V-P",link: "https://vitepress.dev/zh/guide/what-is-vitepress"}
+      {icon: "twitter",link: "https://vitepress.dev/zh/guide/what-is-vitepress"}
     ],
     // 底部配置
     footer: {
