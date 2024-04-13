@@ -13,6 +13,7 @@
     "@mdit-vue/plugin-toc": "^2.0.0",
     "element-plus": "^2.7.0",
     "markdown-it": "^14.0.0",
-    "markdown-it-anchor": "^8.6.7"
+    "markdown-it-anchor": "^8.6.7",
+    "xlsx": "^0.18.5"
   }
 }
