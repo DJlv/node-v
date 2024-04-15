@@ -10,13 +10,15 @@ import { withMermaid } from "vitepress-plugin-mermaid";
 
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
-  base:'/node-v/',
+  // base:'/node-v/',
+  base:'/docs/',
+
   head: [["link", { rel: "icon", href: "/logo.svg" }]],
   title: "文档网站",
   description: "",
   themeConfig: {
     outlineTitle: "文章目录",
-    outline: [2, 6],
+    // outline: [2, 6],
     // outline: "deep",
     // https://vitepress.dev/reference/default-theme-config
     logo: "logo.svg", // 配置logo位置，public目录
