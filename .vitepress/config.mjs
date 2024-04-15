@@ -19,7 +19,7 @@ export default withMermaid({
   description: "",
   themeConfig: {
     outlineTitle: "文章目录",
-    // outline: [2, 6],
+    outline: [2, 6],
     // outline: "deep",
     // https://vitepress.dev/reference/default-theme-config
     logo: "logo.svg", // 配置logo位置，public目录
