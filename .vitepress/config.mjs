@@ -1,6 +1,7 @@
 import { defineConfig } from "vitepress";
 import { set_sidebar } from "../utils/auto-gen-sidebar.mjs";
 import { withMermaid } from "vitepress-plugin-mermaid";
+import { baseHome } from "./pro.js";
 
 // import markdownItAnchor from "markdown-it-anchor";
 // import MarkdownIt from "markdown-it";
@@ -11,7 +12,7 @@ import { withMermaid } from "vitepress-plugin-mermaid";
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
   // base:'/node-v/',
-  base:'/docs/',
+  base:baseHome,
 
   head: [["link", { rel: "icon", href: "/logo.svg" }]],
   title: "文档网站",
