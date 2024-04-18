@@ -26,11 +26,17 @@ export default withMermaid({
     // 顶部导航栏配置
     nav: [
       {
-        text: "工程",
+        text: "学习笔记",
         items: [
-          { text: "dummy", link: "/docs/dummy/index" }
+          { text: "stm32", link: "/docs/stm32/index" }
         ]
       },
+      // {
+      //   text: "工程",
+      //   items: [
+      //     { text: "dummy", link: "/docs/dummy/index" }
+      //   ]
+      // },
       { text: "工具",link: "/docs/address/index" }
     ],
 
