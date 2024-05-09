@@ -1,7 +1,7 @@
 <!-- 导入并读取Excel 表格数据 -->
 <template>
     <div class="table-container">
-      <table>
+      <table style="width: 100%;">
         <tr v-for="item in tableData" :key="item.name">
           <td v-for="item_td in item">
             <span class="span-table">

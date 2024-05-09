@@ -28,7 +28,8 @@ export default withMermaid({
       {
         text: "学习笔记",
         items: [
-          { text: "stm32", link: "/docs/stm32/index" }
+          { text: "stm32", link: "/docs/stm32/index" },
+          { text: "java", link: "/docs/java/index" }
         ]
       },
       // {
