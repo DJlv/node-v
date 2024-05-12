@@ -11,8 +11,8 @@ import { baseHome } from "./pro.js";
 
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
-  // base:'/node-v/',
-  base:baseHome,
+  base:'/node-v/',
+  // base:baseHome,
 
   head: [["link", { rel: "icon", href: "/logo.svg" }]],
   title: "文档网站",
