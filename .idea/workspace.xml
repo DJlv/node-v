@@ -5,10 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b29166ed-8979-4c9d-8214-a0f1cc532ab3" name="Changes" comment="init">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/address/各种软件使用.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/address/各种软件使用.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/componts/excleToData.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/componts/tableUtils.vue" beforeDir="false" afterPath="$PROJECT_DIR$/docs/componts/tableUtils.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/componts/treeUtils.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/dummy/pcb.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/dummy/pcb.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/java/thread.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/java/thread.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/stm32/stm32.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/stm32/stm32.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/dummy.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/public/dummy.xlsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +55,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/Users/zr/Desktop/node",
+    "last_opened_file_path": "C:/Users/zr/Desktop/node/docs/componts",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -66,6 +71,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\zr\Desktop\node\docs\componts" />
       <recent name="E:\code\vue\node\.github\workflows" />
       <recent name="E:\code\vue\node\.vitepress\theme" />
     </key>
@@ -118,15 +124,7 @@
       <workItem from="1713013942554" duration="651000" />
       <workItem from="1713671549746" duration="16000" />
       <workItem from="1714964193291" duration="2619000" />
-      <workItem from="1715166136057" duration="5742000" />
-    </task>
-    <task id="LOCAL-00001" summary="init">
-      <option name="closed" value="true" />
-      <created>1712882891536</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1712882891536</updated>
+      <workItem from="1715166136057" duration="21011000" />
     </task>
     <task id="LOCAL-00002" summary="init">
       <option name="closed" value="true" />
@@ -504,7 +502,23 @@
       <option name="project" value="LOCAL" />
       <updated>1715261112283</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="init">
+      <option name="closed" value="true" />
+      <created>1715310765982</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1715310765982</updated>
+    </task>
+    <task id="LOCAL-00050" summary="init">
+      <option name="closed" value="true" />
+      <created>1715481688793</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1715481688793</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
