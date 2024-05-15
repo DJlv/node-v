@@ -70,9 +70,10 @@ export default {
   white-space: nowrap;
   height: 400px;
   display: flex;
-  /* 根据需要设置宽度 */
 }
-
+.table-container::-webkit-scrollbar-thumb {
+  background: #f1efef;  /* 设置滚动条滑块的颜色 */
+}
 table {
   display: inline-block;
   white-space: nowrap;
@@ -80,7 +81,7 @@ table {
 
 table  tr:nth-child(1)
 {
-  background-color: #f9f9f9;
+  background-color: #9a9696;
   position: sticky;
   top: 0;
 }
