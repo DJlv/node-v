@@ -28,8 +28,11 @@ export default withMermaid({
       {
         text: "学习笔记",
         items: [
+          { text: "c++", link: "/docs/cpp/index" },
           { text: "stm32", link: "/docs/stm32/index" },
-          { text: "java", link: "/docs/java/index" }
+          { text: "java", link: "/docs/java/index" },
+          { text: "虚幻", link: "/docs/ue4/index" },
+          { text: "company", link: "/docs/company/index" }
         ]
       },
       // {

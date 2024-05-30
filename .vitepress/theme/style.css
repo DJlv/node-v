@@ -236,3 +236,20 @@
 /*     padding-left:  250px !important;*/
 /*  }*/
 /*}*/
+
+/* 在你的VitePress项目的全局样式文件中 */
+img {
+  max-width: 50%; /* 图片宽度不超过其容器宽度 */
+  height: 20%; /* 图片高度自动缩放以保持比例 */
+  display: block; /* 图片以块级元素显示，可设置宽高 */
+  margin: 20px auto; /* 图片上下间距 */
+}
+
+@media (min-width: 768px) {
+  img {
+    margin-top: 100px;
+    width: 50%; /* 图片宽度充满其容器宽度 */
+    Height: 20%; /* 图片高度自动缩放以保持比例 */
+    /*margin-left: 40px*/
+  }
+}

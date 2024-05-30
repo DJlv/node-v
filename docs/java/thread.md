@@ -4,8 +4,7 @@ import svgUtils from "../componts/svgUtils.vue";
 </script>
 
 ## 线程
-
-:::details 线程的概念
+:::info 线程的概念
 
 
 :::
