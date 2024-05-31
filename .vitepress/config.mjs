@@ -1,7 +1,5 @@
 import {withMermaid} from "vitepress-plugin-mermaid";
-import {baseHome} from "./pro.js";
 
-// 目前有两个问题没搞懂，一个是配置了srcDir以后，我的style.css样式不生效了。第二个是markdown扩展插件到底怎么用的啊
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
     base: '/node-v/',

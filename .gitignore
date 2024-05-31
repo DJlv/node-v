@@ -7,5 +7,4 @@ cache
 .temp
 *.local
 .obsidian
-.vitepress/pro.js
 company
