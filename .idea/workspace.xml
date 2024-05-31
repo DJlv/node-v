@@ -5,19 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b29166ed-8979-4c9d-8214-a0f1cc532ab3" name="Changes" comment="init">
-      <change afterPath="$PROJECT_DIR$/docs/cpp/cpp.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/cpp/index.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/ue4/index.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/ue4/word.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/project/dummy/V1.2校验版dummy-v2物料表cnc.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/project/dummy/dummy.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/project/index.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.vitepress/config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/.vitepress/config.mjs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.vitepress/theme/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/.vitepress/theme/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/componts/tableUtils.vue" beforeDir="false" afterPath="$PROJECT_DIR$/docs/componts/tableUtils.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/java/thread.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/java/thread.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/stm32/cmake.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/cpp/cmake.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/stm32/io.drawio" beforeDir="false" afterPath="$PROJECT_DIR$/docs/stm32/io.drawio" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/dummy.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/public/dummy.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/cpp/cmake.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/learn/cmake/cmake.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/cpp/cpp.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/learn/cpp/cpp.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/cpp/index.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/java/index.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/java/meaning.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/learn/index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/java/thread.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/learn/java/thread.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/stm32/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/learn/stm32/index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/stm32/io.drawio" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/stm32/motor.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/learn/stm32/motor.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/stm32/stm32.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/learn/stm32/stm32.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/stm32/stm32寄存器.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/docs/learn/stm32/stm32寄存器.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/ue4/index.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/ue4/word.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/learn/ue4/word.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ueWord/io.drawio" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,7 +66,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/Users/zr/Desktop/node/docs/company/cqrcb",
+    "last_opened_file_path": "C:/Users/zr/Desktop/node/docs/project",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -75,18 +82,18 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\zr\Desktop\node\docs\project" />
+      <recent name="C:\Users\zr\Desktop\node\docs\dummy" />
       <recent name="C:\Users\zr\Desktop\node\docs\company\cqrcb" />
       <recent name="C:\Users\zr\Desktop\node\docs\company" />
       <recent name="C:\Users\zr\Desktop\node\docs\ue4" />
-      <recent name="C:\Users\zr\Desktop\node\docs\cpp" />
-      <recent name="C:\Users\zr\Desktop\node\docs\componts" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\zr\Desktop\node\docs\learn\cmake" />
+      <recent name="C:\Users\zr\Desktop\node\docs\learn" />
+      <recent name="C:\Users\zr\Desktop\node\docs\project" />
+      <recent name="C:\Users\zr\Desktop\node\docs" />
       <recent name="C:\Users\zr\Desktop\node\docs\cpp" />
-      <recent name="C:\Users\zr\Desktop\node\docs\java" />
-      <recent name="C:\Users\zr\Desktop\node\public" />
-      <recent name="E:\code\vue\node\public\dummy" />
-      <recent name="E:\code\vue\node\docs\dummy" />
     </key>
   </component>
   <component name="RunManager" selected="npm.docs:dev">
@@ -132,23 +139,7 @@
       <workItem from="1713671549746" duration="16000" />
       <workItem from="1714964193291" duration="2619000" />
       <workItem from="1715166136057" duration="42249000" />
-      <workItem from="1715906661880" duration="24548000" />
-    </task>
-    <task id="LOCAL-00004" summary="init">
-      <option name="closed" value="true" />
-      <created>1712885009415</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1712885009415</updated>
-    </task>
-    <task id="LOCAL-00005" summary="init">
-      <option name="closed" value="true" />
-      <created>1712885193586</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1712885193586</updated>
+      <workItem from="1715906661880" duration="34346000" />
     </task>
     <task id="LOCAL-00006" summary="init">
       <option name="closed" value="true" />
@@ -526,7 +517,23 @@
       <option name="project" value="LOCAL" />
       <updated>1715786439342</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="init">
+      <option name="closed" value="true" />
+      <created>1717032357356</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1717032357356</updated>
+    </task>
+    <task id="LOCAL-00054" summary="init">
+      <option name="closed" value="true" />
+      <created>1717032427502</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1717032427502</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
