@@ -1,6 +1,3 @@
-<script setup>
-import imgUtils from "../../componts/imgUtils.vue"; 
-</script>
 ## 开放世界
 ### 创建项目
 1. 使用ue4版本 4.20.3

@@ -1,5 +1,5 @@
 <template>
-<div  class="demo-image__preview">
+<div >
   <el-image
       style="width: 50px; height: 50px"
       :src="url"
@@ -9,8 +9,6 @@
 </div>
 </template>
 <script>
-import axios from "axios";
-
 export default {
   props: ["urls"],
   data() {

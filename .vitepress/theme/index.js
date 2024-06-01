@@ -5,6 +5,10 @@ import './style.css'
 import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
 
+import imgUtils from "../../docs/componts/imgUtils.vue";
+import tableUtils from "../../docs/componts/tableUtils.vue";
+import svgUtils from "../../docs/componts/svgUtils.vue";
+
 /** @type {import('vitepress').Theme} */
 export default {
   extends: DefaultTheme,
@@ -16,5 +20,8 @@ export default {
   enhanceApp({ app, router, siteData }) {
     // ...
     app.use(ElementPlus);
+    app.component("imgUtils", imgUtils);
+    app.component("tableUtils", tableUtils);
+    app.component("svgUtils", svgUtils);
   },
 }
