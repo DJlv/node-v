@@ -1,12 +1,5 @@
 <template>
-<div >
-  <el-image
-      style="width: 50px; height: 50px"
-      :src="url"
-      fit="fill"
-      :preview-src-list="srcList">
-  </el-image>
-</div>
+  <el-image style="width: 80px; height: 30px" :src="url" :preview-src-list="srcList"></el-image>
 </template>
 <script>
 export default {
