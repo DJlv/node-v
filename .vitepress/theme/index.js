@@ -9,6 +9,7 @@ import imgUtils from "../../docs/componts/imgUtils.vue";
 import tableUtils from "../../docs/componts/tableUtils.vue";
 import svgUtils from "../../docs/componts/svgUtils.vue";
 
+
 /** @type {import('vitepress').Theme} */
 export default {
   extends: DefaultTheme,
