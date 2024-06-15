@@ -8,6 +8,9 @@ features:
   - title: c++
     details: 
     link: /docs/learn/cpp/cpp
+  - title: imgui
+    details:
+    link: /docs/learn/imgui/index    
   - title: cmake
     details:
     link: /docs/learn/cmake/cmake    
