@@ -1,7 +1,6 @@
 
 ## 1 网址
 
-
 [AI](https://chat18.aichatos.xyz/#/chat/1710832647551)
 
 [spring 中文文档](https://springdoc.cn/docs/)
@@ -16,8 +15,8 @@
 
 [2k壁纸](https://bz.zzzmh.cn/index)
 
-
 [ubuntu安装docker网站](https://docs.docker.com/engine/install/ubuntu/)
 
-
 [步进电机](https://zhuanlan.zhihu.com/p/672380695)
+
+[代码变量命名](https://www.chtml.cn)

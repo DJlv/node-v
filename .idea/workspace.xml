@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b29166ed-8979-4c9d-8214-a0f1cc532ab3" name="Changes" comment="全局组件">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vitepress/theme/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/.vitepress/theme/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/learn/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/learn/index.md" afterDir="false" />
-    </list>
+    <list default="true" id="b29166ed-8979-4c9d-8214-a0f1cc532ab3" name="Changes" comment="全局组件" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -129,22 +125,7 @@
       <workItem from="1717838727530" duration="96000" />
       <workItem from="1718074690054" duration="863000" />
       <workItem from="1718075561337" duration="1959000" />
-    </task>
-    <task id="LOCAL-00010" summary="init">
-      <option name="closed" value="true" />
-      <created>1712896496521</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1712896496521</updated>
-    </task>
-    <task id="LOCAL-00011" summary="init">
-      <option name="closed" value="true" />
-      <created>1712897227697</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1712897227697</updated>
+      <workItem from="1718464016830" duration="438000" />
     </task>
     <task id="LOCAL-00012" summary="init">
       <option name="closed" value="true" />
@@ -522,7 +503,23 @@
       <option name="project" value="LOCAL" />
       <updated>1717212923065</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="全局组件">
+      <option name="closed" value="true" />
+      <created>1718464060100</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1718464060101</updated>
+    </task>
+    <task id="LOCAL-00060" summary="全局组件">
+      <option name="closed" value="true" />
+      <created>1718464160747</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1718464160747</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
