@@ -26,4 +26,3 @@ export default {
     app.component("svgUtils", svgUtils);
   },
 }
-贷款
