@@ -159,8 +159,7 @@
 }
 
 
-@media (min-width: 1440px)
-{
+@media (min-width: 1440px) {
   .VPNavBar.has-sidebar .content {
     padding-right: 10px !important;
     padding-left:  10px !important;
