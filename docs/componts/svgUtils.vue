@@ -34,7 +34,6 @@ export default {
     document.addEventListener("mousemove", drag, false);
 
     function dragStart(e) {
-      debugger;
       initialX = getComputedStyle(dragItem, null).getPropertyValue("left");
       initialY = getComputedStyle(dragItem, null).getPropertyValue("top");
       initialX = parseInt(initialX.substring(0, initialX.length - 2));

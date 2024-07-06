@@ -8,3 +8,4 @@ cache
 *.local
 .obsidian
 company
+companysSideBar.js

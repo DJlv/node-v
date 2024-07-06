@@ -1,5 +1,5 @@
 import {withMermaid} from "vitepress-plugin-mermaid";
-
+import {sidebar}  from "./sideBar.js"
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
     base: '/node-v/',
@@ -16,17 +16,16 @@ export default withMermaid({
             {text: '工具文档', link: '/docs/address/index'},
             {text: "其他", link: "/docs/company/index"}
         ],
-        // sidebar: {
-        //     '/docs/dummy/dummy': [{text: "dummy", link: "/docs/dummy/dummy"}]
-        // },
+        sidebar: sidebar,
+        // sidebar: "auto",
         socialLinks: [
             {icon: "github", link: "https://github.com/DJlv"},
             {icon: "twitter", link: "https://vitepress.dev/zh/guide/what-is-vitepress"}
         ],
-        navbar: true, //开启导航栏，我设置成false也没啥用不知道为啥
-        sidebar: false, // 关闭侧边栏
-        lastUpdated: true, // 显示上次修改时间
-        aside: "left", // 设置右侧侧边栏在左侧显示
+        // navbar: true, //开启导航栏，我设置成false也没啥用不知道为啥
+        // sidebar: false, // 关闭侧边栏
+        // lastUpdated: true, // 显示上次修改时间
+        // aside: "left", // 设置右侧侧边栏在左侧显示
         // 底部配置
         footer: {
             copyright: "",
