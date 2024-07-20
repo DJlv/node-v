@@ -19,7 +19,7 @@ features:
     link: /docs/learn/stm32/index
   - title: java
     details:
-    link: /docs/learn/java/thread/thread
+    link: /docs/learn/java/index
   - title: 虚幻
     details:
     link: /docs/learn/ue4/word

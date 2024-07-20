@@ -4,7 +4,7 @@
       <table width="100%">
         <tr v-for="item in tableData" :key="item.name">
           <td v-for="item_td in item">
-            <span>
+            <span style="color: '${item_td.color}';">
               {{ item_td }}
             </span>
           </td>
@@ -23,7 +23,17 @@ export default {
     return {
       excelUrl: 'http://localhost:5173/node-v/public/'+ this.urls,
       tableData: [],
-      i: 0
+      name: this.sheetName,
+      actDiv: {
+        start_x: 0,
+        start_y: 0,
+        end_x: 0,
+        end_y: 0,
+        color: "#ffffff",
+        font_color:  "#ffffff",
+        font_size: 14,
+        format: "12"
+      }
     };
   },
   mounted() {
@@ -36,9 +46,20 @@ export default {
           .then(response => {
             // 将响应的二进制数据转换为Excel的workbook对象
             const workbook = xlsx.read(response.data, { type: 'buffer' });
+   
+
+            var sheetName = "";
             // 获取第一个sheet
-            const sheetName = workbook.SheetNames[this.i];
+            workbook.SheetNames.forEach(vo=> {
+              if(vo === this.name) {
+                sheetName = vo;
+                return;
+              }
+            })
+
+            // const sheetName = workbook.SheetNames[this.i];
             const sheet = workbook.Sheets[sheetName];
+            console.log(sheet);
             // 将sheet转换为JSON对象数组
             const jsonData = xlsx.utils.sheet_to_json(sheet,{
               head: 0,
