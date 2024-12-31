@@ -194,7 +194,11 @@
   padding: 0px 0px 0px 15% !important;
 }
 }
-
+@media (min-width: 1440px) {
+  .VPContent.has-sidebar{
+    padding-right: calc((100vw - var(--vp-layout-max-width)) / 3) !important;
+  }
+}
 /* @media (min-width: 960px) {
 .VPDoc {
   padding: 20px 10px 0 !important;
