@@ -8,7 +8,7 @@
  *
  * Each colors have exact same color scale system with 3 levels of solid
  * colors with different brightness, and 1 soft color.
- * 
+ *
  * - `XXX-1`: The most solid color used mainly for colored text. It must
  *   satisfy the contrast ratio against when used on top of `XXX-soft`.
  *
@@ -133,73 +133,62 @@
   --docsearch-primary-color: var(--vp-c-brand-1) !important;
 }
 /*自定义*/
-@media (min-width: 250px)
+@media
 {
   .VPNavBar.has-sidebar .title {
     padding-left: 20px !important;
   }
 }
 
-@media (min-width: 1440px)
+@media
 {
   .VPSidebar {
-    padding-left:  20px !important;
-    max-width: 250px !important;
+    padding-left:  2% !important;
+    max-width: 10% !important;
   }
 }
-
-@media (min-width: 1200px) {
+@media{
   .VPNavBar.has-sidebar .content {
     padding-right: 10px !important;
     padding-left:  10px !important;
   }
 }
-
-
-@media (min-width: 1200px)
+@media
 {
   .VPContent.has-sidebar {
     margin:  0 0;
-    padding-left: 100px !important;
+    padding-left: 5% !important;
   }
 }
-
 .VPDoc.has-aside .content-container {
-  padding-left:  100px !important;
+  padding-left:  0% !important;
 }
-
 /* 自定义侧边栏在最左边，右边撑满宽度 */
 .VPDoc .container {
   margin: 0 !important;
-} 
-
-.VPDoc.has-aside .content-container {
-  max-width: 1100px !important;
 }
-
-.aside[data-v-cb6643dd] {
-  max-width: 300px !important;
+.VPDoc.has-aside .content-container {
+  max-width: 100% !important;
+}
+.aside{
+  max-width: 0px !important;
 }
 body {
-  margin-left: 100px !important;
+  margin-left: 200px !important;
 }
-
-@media (min-width: 960px) {
+@media{
   .VPSidebar {
     background-color: var(--vp-nav-bg-color) !important;
   }
 }
-
-@media (min-width: 960px) {
+@media{
   .curtain {
     background-color: var(--vp-nav-bg-color) !important;
   }
 }
-
-@media (min-width: 960px) {
-
+@media{
   .VPNavBarSearch {
-    padding-left: 300px;
+    padding-left: 100px;
   }
 }
 
@@ -235,7 +224,7 @@ img {
   /* 图片上下间距 */
 }
 
-@media (min-width: 1280px) {
+@media{
   .content {
     order: 0;
     margin: 0;
@@ -247,7 +236,7 @@ img {
   --vp-home-hero-name-color: transparent;
   --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #072a30, #41d1ff);
 }
-@media (min-width: 960px) {
+@media {
 
       .VPContent.has-sidebar {
           margin: var(--vp-layout-top-height, 0px) 0 0;
