@@ -173,9 +173,6 @@
 .aside{
   max-width: 0px !important;
 }
-body {
-  margin-left: 200px !important;
-}
 @media{
   .VPSidebar {
     background-color: var(--vp-nav-bg-color) !important;
@@ -190,6 +187,12 @@ body {
   .VPNavBarSearch {
     padding-left: 100px;
   }
+}
+
+@media{
+.VPDoc[data-v-343c73d6] {
+  padding: 0px 0px 0px 15%;
+}
 }
 
 /* @media (min-width: 960px) {
