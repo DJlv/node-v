@@ -1,5 +1,5 @@
 import {withMermaid} from "vitepress-plugin-mermaid";
-import {sidebar}  from "./sideBar.js"
+import {sidebar,navbar}  from "../docs/sideBar.js"
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
     base: '/node-v/',
@@ -10,12 +10,7 @@ export default withMermaid({
         outlineTitle: "文章目录",
         outline: [1, 6],
         // 顶部导航栏配置
-        nav: [
-            {text: '学习笔记', link: '/docs/learn/index'},
-            {text: '工程', link: '/docs/project/index'},
-            {text: '工具文档', link: '/docs/address/index'},
-            {text: "其他", link: "/docs/company/index"}
-        ],
+        nav: navbar,
         sidebar: sidebar,
         // sidebar: "auto",
         socialLinks: [
