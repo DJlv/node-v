@@ -1,5 +1,6 @@
 import {withMermaid} from "vitepress-plugin-mermaid";
 import {sidebar,navbar}  from "../docs/sideBar.js"
+
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
     base: '/node-v/',

@@ -21,7 +21,8 @@ export const javaOther = [ // java目录
                 collapsed: true, text: '多线程', items: [
                     { text: '进程与线程', link: '/docs/learn/java/thread/process' },
                     { text: '线程', link: '/docs/learn/java/thread/thread' },
-                    { text: '共享模型--管程', link: '/docs/learn/java/thread/sharedModel' }
+                    { text: '共享模型--管程', link: '/docs/learn/java/thread/sharedModel' },
+                    { text: '文件', link: '/docs/learn/java/thread/文件' }
                 ]
             }
         ]
