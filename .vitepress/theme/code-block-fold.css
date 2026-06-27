@@ -1,0 +1,65 @@
+.vp-doc div.fold[class*="language-"] {
+  overflow: unset;
+  margin-bottom: var(--codeblocks-margin-bottom, 48px);
+}
+
+.vp-doc div.fold[class*="language-"] > .line-numbers-wrapper {
+  overflow: hidden;
+}
+
+.vp-doc div.fold[class*="language-"] > .codeblocks-mask {
+  display: block;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 48px;
+  width: 100%;
+  z-index: 9;
+  pointer-events: none;
+}
+
+.vp-doc div.fold[class*="language-"] > .fold-btn {
+  display: flex;
+  position: absolute;
+  left: 0;
+  bottom: -36px;
+  height: 36px;
+  width: 100%;
+  z-index: 9;
+  border-radius: 0 0 8px 8px;
+  cursor: pointer;
+  user-select: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.vp-doc div.fold[class*="language-"] > .fold-btn > svg.fold-btn-icon {
+  fill: var(--vp-c-text-2);
+  animation: code-fold-float-down 0.8s infinite;
+}
+
+.vp-doc div.fold[class*="language-"] > .fold-btn > svg.fold-btn-icon.turn {
+  animation: code-fold-float-up 0.8s infinite;
+}
+
+@keyframes code-fold-float-down {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes code-fold-float-up {
+  0%,
+  100% {
+    transform: translateY(0) rotate(180deg);
+  }
+
+  50% {
+    transform: translateY(-5px) rotate(180deg);
+  }
+}

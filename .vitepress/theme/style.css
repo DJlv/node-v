@@ -145,15 +145,21 @@
   --vp-layout-max-width: 1920px;
   /* 侧栏与正文区背景区分 */
   --vp-sidebar-bg-color: var(--vp-c-bg-alt);
-  --vp-doc-aside-bg: var(--vp-c-bg-alt);
+  --vp-doc-aside-bg: transparent;
   --vp-doc-content-bg: var(--vp-c-bg);
   /* 宽屏右侧留白宽度（仅 viewport > layout-max-width 时有值） */
   --vp-doc-aside-gutter: max(0px, (100vw - var(--vp-layout-max-width)) / 2);
+  /* 文章目录：固定起始位置、宽度、高度 */
+  --vp-doc-aside-width: var(--vp-aside-width);
+  --vp-doc-aside-top: calc(var(--vp-nav-height) + var(--vp-layout-top-height, 0px) + 48px);
+  --vp-doc-aside-height: calc(100vh - var(--vp-doc-aside-top) - 32px);
+  --vp-doc-aside-height: calc(100dvh - var(--vp-doc-aside-top) - 32px);
+  --vp-doc-aside-title-height: 40px;
 }
 
 .dark {
   --vp-sidebar-bg-color: var(--vp-c-bg-alt);
-  --vp-doc-aside-bg: var(--vp-c-bg-alt);
+  --vp-doc-aside-bg: transparent;
   --vp-doc-content-bg: var(--vp-c-bg);
 }
 
@@ -202,31 +208,94 @@
   }
 }
 
-/* 右侧目录区：隐藏滚动条，保留滚轮/触控滑动 */
+/* 右侧目录区：固定布局 + 目录列表固定区域滚动 */
 @media (min-width: 1280px) {
+  .VPDoc.has-aside .doc-aside-panel {
+    top: var(--vp-doc-aside-top);
+    right: var(--vp-doc-aside-gutter);
+    width: var(--vp-doc-aside-width);
+    height: var(--vp-doc-aside-height);
+    max-height: var(--vp-doc-aside-height);
+  }
+
   .VPDoc.has-aside .doc-aside-nav {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    padding: 0 16px;
+    box-sizing: border-box;
+  }
+
+  /* 目录组件链：撑满固定面板，列表区内部滚动 */
+  .VPDoc.has-aside .VPDocAside {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .VPDoc.has-aside .VPDocAside .spacer {
+    display: none;
+  }
+
+  .VPDoc.has-aside .VPDocAsideOutline.has-outline {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .VPDoc.has-aside .VPDocAsideOutline .content {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    border-left: 1px solid var(--vp-c-divider);
+    padding-left: 16px;
+  }
+
+  .VPDoc.has-aside .VPDocAsideOutline .outline-title {
+    flex: 0 0 var(--vp-doc-aside-title-height);
+    height: var(--vp-doc-aside-title-height);
+    margin: 0;
+    padding: 0;
+    line-height: var(--vp-doc-aside-title-height);
+    font-size: 14px;
+    font-weight: 600;
+    background-color: transparent;
+  }
+
+  .VPDoc.has-aside .VPDocAsideOutline nav {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: calc(var(--vp-doc-aside-height) - var(--vp-doc-aside-title-height) - 32px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-bottom: 8px;
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
 
-  .VPDoc.has-aside .doc-aside-nav::-webkit-scrollbar {
+  .VPDoc.has-aside .VPDocAsideOutline nav::-webkit-scrollbar {
     width: 0;
     height: 0;
     display: none;
   }
 
-  /* 宽屏右侧留白背景（仅填充 padding 区，不侵入正文列） */
+  .VPDoc.has-aside .doc-aside-fade {
+    display: none;
+  }
+
   .VPDoc.has-aside .aside::after {
-    content: '';
-    position: fixed;
-    top: calc(var(--vp-nav-height) + var(--vp-layout-top-height, 0px));
-    right: 0;
-    z-index: 0;
-    width: var(--vp-doc-aside-gutter);
-    height: calc(100vh - var(--vp-nav-height) - var(--vp-layout-top-height, 0px));
-    height: calc(100dvh - var(--vp-nav-height) - var(--vp-layout-top-height, 0px));
-    background-color: var(--vp-doc-aside-bg);
-    pointer-events: none;
+    display: none;
   }
 
   /* 长页面时隐藏浏览器最右侧滚动条（仍可滚轮滚动） */

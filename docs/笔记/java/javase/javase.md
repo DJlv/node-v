@@ -68,7 +68,7 @@ ctrl + z //撤销
 
    - 键盘
 
-     <img src="../../../../public/picture-master/static/image-20220305105405264.png" alt="image-20220305105405264" style="zoom:25%;" />
+     <img src="../../../../public/picture-master/static/image-20220305105405264.png" alt="image-20220305105405264"/>
 
    - 打开运行窗口
 
@@ -78,19 +78,19 @@ ctrl + z //撤销
 
      - win + r //打开cmd
 
-       <img src="../../../../public/picture-master/static/image-20220305105503765.png" alt="image-20220305105503765" style="zoom:25%;" />
+       <img src="../../../../public/picture-master/static/image-20220305105503765.png" alt="image-20220305105503765"/>
 
      - ipconfig //查看ip
 
-       <img src="../../../../public/picture-master/static/image-20220305105716692.png" alt="image-20220305105716692" style="zoom:25%;" />
+       <img src="../../../../public/picture-master/static/image-20220305105716692.png" alt="image-20220305105716692"/>
 
      - cls //清屏
 
-       <img src="../../../../public/picture-master/static/image-20220305105828427.png" alt="image-20220305105828427" style="zoom:25%;" />
+       <img src="../../../../public/picture-master/static/image-20220305105828427.png" alt="image-20220305105828427"/>
 
      - ping //查看ip 通否
 
-       <img src="../../../../public/picture-master/static/image-20220305110059518.png" alt="image-20220305110059518" style="zoom:25%;" />
+       <img src="../../../../public/picture-master/static/image-20220305110059518.png" alt="image-20220305110059518"/>
 
      - p盘符：去对应的盘符
 
@@ -400,11 +400,11 @@ public class VariableDemo{
 }
 ```
 
-<img src="../../../../public/picture-master/static/image-20220306095259721.png" alt="image-20220306095259721" style="zoom:25%;" />
+<img src="../../../../public/picture-master/static/image-20220306095259721.png" alt="image-20220306095259721"/>
 
 注意：程序是从上往下执行的流程，没有执行到的不管。
 
-<img src="../../../../public/picture-master/static/image-20220306095502992.png" alt="image-20220306095502992" style="zoom:25%;" />
+<img src="../../../../public/picture-master/static/image-20220306095502992.png" alt="image-20220306095502992"/>
 
 ## 14. 常量
 

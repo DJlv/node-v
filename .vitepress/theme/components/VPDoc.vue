@@ -129,24 +129,21 @@ const pageName = computed(() =>
   width: 100%;
 }
 
-/* 文档流占位：仅保留目录列宽度，不参与背景绘制 */
+/* 文档流占位：宽度与目录面板一致 */
 .aside {
   position: relative;
   display: none;
   order: 2;
-  flex: 0 0 var(--vp-aside-width, 280px);
-  width: 100%;
-  max-width: var(--vp-aside-width, 280px);
+  flex: 0 0 var(--vp-doc-aside-width, var(--vp-aside-width, 280px));
+  width: var(--vp-doc-aside-width, var(--vp-aside-width, 280px));
+  max-width: var(--vp-doc-aside-width, var(--vp-aside-width, 280px));
 }
 
 .left-aside {
   order: 1;
 }
 
-/*
- * 右侧目录面板：对齐左侧 VPSidebar 模式
- * fixed + top/bottom 撑满视口，单一背景层，避免多层叠加产生色差
- */
+/* 文章目录面板：固定 top / right / width / height */
 .doc-aside-panel {
   display: none;
 }
@@ -154,16 +151,17 @@ const pageName = computed(() =>
 @media (min-width: 1280px) {
   .doc-aside-panel {
     position: fixed;
-    top: calc(var(--vp-nav-height) + var(--vp-layout-top-height, 0px));
+    top: var(--vp-doc-aside-top);
+    right: var(--vp-doc-aside-gutter);
     z-index: 1;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    width: var(--vp-aside-width, 280px);
-    height: calc(100vh - var(--vp-nav-height) - var(--vp-layout-top-height, 0px));
-    height: calc(100dvh - var(--vp-nav-height) - var(--vp-layout-top-height, 0px));
-    background-color: var(--vp-doc-aside-bg, var(--vp-c-bg-alt));
-    border-left: 1px solid var(--vp-c-divider);
+    width: var(--vp-doc-aside-width);
+    height: var(--vp-doc-aside-height);
+    max-height: var(--vp-doc-aside-height);
+    background-color: transparent;
+    border-left: none;
     overflow: hidden;
     pointer-events: none;
   }
@@ -175,30 +173,14 @@ const pageName = computed(() =>
 }
 
 .doc-aside-nav {
-  flex: 1;
+  flex: 1 1 auto;
   min-height: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-  padding: 48px 16px 32px;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.doc-aside-nav::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-  display: none;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .doc-aside-fade {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 2;
-  height: 32px;
-  background: linear-gradient(transparent, var(--vp-doc-aside-bg, var(--vp-c-bg-alt)) 70%);
-  pointer-events: none;
+  display: none;
 }
 
 .content {
