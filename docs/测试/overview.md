@@ -11,7 +11,7 @@
 ## 示例内容
 
 ```js
-console.log("hello test");
+console.log("hello 测试");
 ```
 
 - [ ] 首页可见

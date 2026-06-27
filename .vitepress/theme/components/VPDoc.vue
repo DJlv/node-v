@@ -23,10 +23,9 @@ const pageName = computed(() =>
   >
     <slot name="doc-top" />
     <div class="container">
-      <div v-if="hasAside" class="aside" :class="{'left-aside': leftAside}">
-        <div class="aside-curtain" />
-        <div class="aside-container">
-          <div class="aside-content">
+      <div v-if="hasAside" class="aside" :class="{ 'left-aside': leftAside }">
+        <aside class="doc-aside-panel">
+          <nav class="doc-aside-nav" aria-label="文章目录">
             <VPDocAside>
               <template #aside-top><slot name="aside-top" /></template>
               <template #aside-bottom><slot name="aside-bottom" /></template>
@@ -35,8 +34,9 @@ const pageName = computed(() =>
               <template #aside-ads-before><slot name="aside-ads-before" /></template>
               <template #aside-ads-after><slot name="aside-ads-after" /></template>
             </VPDocAside>
-          </div>
-        </div>
+          </nav>
+          <div class="doc-aside-fade" aria-hidden="true" />
+        </aside>
       </div>
 
       <div class="content">
@@ -93,11 +93,24 @@ const pageName = computed(() =>
 @media (min-width: 1280px) {
   .VPDoc .container {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
+    max-width: 100%;
   }
 
   .VPDoc .aside {
     display: block;
+  }
+
+  .VPDoc.has-aside .content {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none;
+    padding: 0 20px 128px;
+  }
+
+  .VPDoc.has-aside .content-container {
+    max-width: none;
+    width: 100%;
   }
 }
 
@@ -116,51 +129,76 @@ const pageName = computed(() =>
   width: 100%;
 }
 
+/* 文档流占位：仅保留目录列宽度，不参与背景绘制 */
 .aside {
   position: relative;
   display: none;
   order: 2;
-  flex: 0 0 var(--vp-aside-width, 300px);
-  padding-left: 24px;
+  flex: 0 0 var(--vp-aside-width, 280px);
   width: 100%;
-  max-width: var(--vp-aside-width, 300px);
+  max-width: var(--vp-aside-width, 280px);
 }
 
 .left-aside {
   order: 1;
-  padding-left: unset;
-  padding-right: 24px;
 }
 
-.aside-container {
-  position: fixed;
-  top: 0;
-  padding-top: calc(var(--vp-nav-height) + var(--vp-layout-top-height, 0px) + var(--vp-doc-top-height, 0px) + 48px);
-  width: var(--vp-aside-width, 300px);
-  height: 100vh;
-  overflow-x: hidden;
-  overflow-y: auto;
-  scrollbar-width: none;
-}
-
-.aside-container::-webkit-scrollbar {
+/*
+ * 右侧目录面板：对齐左侧 VPSidebar 模式
+ * fixed + top/bottom 撑满视口，单一背景层，避免多层叠加产生色差
+ */
+.doc-aside-panel {
   display: none;
 }
 
-.aside-curtain {
-  position: fixed;
-  bottom: 0;
-  z-index: 10;
-  width: var(--vp-aside-width, 300px);
-  height: 32px;
-  background: linear-gradient(transparent, var(--vp-c-bg) 70%);
+@media (min-width: 1280px) {
+  .doc-aside-panel {
+    position: fixed;
+    top: calc(var(--vp-nav-height) + var(--vp-layout-top-height, 0px));
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: var(--vp-aside-width, 280px);
+    height: calc(100vh - var(--vp-nav-height) - var(--vp-layout-top-height, 0px));
+    height: calc(100dvh - var(--vp-nav-height) - var(--vp-layout-top-height, 0px));
+    background-color: var(--vp-doc-aside-bg, var(--vp-c-bg-alt));
+    border-left: 1px solid var(--vp-c-divider);
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .doc-aside-nav,
+  .doc-aside-fade {
+    pointer-events: auto;
+  }
 }
 
-.aside-content {
-  display: flex;
-  flex-direction: column;
-  min-height: calc(100vh - (var(--vp-nav-height) + var(--vp-layout-top-height, 0px) + 48px));
-  padding-bottom: 32px;
+.doc-aside-nav {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 48px 16px 32px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.doc-aside-nav::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.doc-aside-fade {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  height: 32px;
+  background: linear-gradient(transparent, var(--vp-doc-aside-bg, var(--vp-c-bg-alt)) 70%);
+  pointer-events: none;
 }
 
 .content {
@@ -190,7 +228,8 @@ const pageName = computed(() =>
 }
 
 .VPDoc.has-aside .content-container {
-  max-width: 100%;
+  max-width: none;
+  width: 100%;
 }
 
 .external-link-icon-enabled :is(.vp-doc a[href*='://'], .vp-doc a[target='_blank'])::after {

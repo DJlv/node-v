@@ -1,16 +1,38 @@
-<!-- 导入并读取Excel 表格数据 -->
+<!-- 从 public 目录读取 Excel 并渲染为表格 -->
 <template>
-    <div class="table-container">
-      <table width="100%">
-        <tr v-for="item in tableData" :key="item.name">
-          <td v-for="item_td in item">
-            <span style="color: '${item_td.color}';">
-              {{ item_td }}
-            </span>
-          </td>
-        </tr>
+  <div class="table-utils">
+    <div v-if="loading" class="table-utils__status">
+      <span class="table-utils__spinner" aria-hidden="true" />
+      正在加载表格…
+    </div>
+
+    <div v-else-if="error" class="table-utils__status table-utils__status--error">
+      {{ error }}
+    </div>
+
+    <div v-else-if="!rows.length" class="table-utils__status">
+      工作表「{{ sheetName }}」暂无数据
+    </div>
+
+    <div v-else class="table-utils__scroll">
+      <table class="table-utils__table">
+        <thead>
+          <tr>
+            <th v-for="(col, index) in headers" :key="`h-${index}`">
+              {{ formatCell(col) }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(row, rowIndex) in rows" :key="`r-${rowIndex}`">
+            <td v-for="(cell, colIndex) in row" :key="`c-${rowIndex}-${colIndex}`">
+              {{ formatCell(cell) }}
+            </td>
+          </tr>
+        </tbody>
       </table>
     </div>
+  </div>
 </template>
 
 <script>
@@ -18,120 +40,198 @@ import axios from "axios";
 import * as xlsx from "xlsx";
 
 export default {
-  props: ["urls","sheetName"],
+  props: {
+    urls: { type: String, required: true },
+    sheetName: { type: String, required: true },
+  },
   data() {
     return {
-      excelUrl: 'http://localhost:5173/node-v/public/'+ this.urls,
-      tableData: [],
-      name: this.sheetName,
-      actDiv: {
-        start_x: 0,
-        start_y: 0,
-        end_x: 0,
-        end_y: 0,
-        color: "#ffffff",
-        font_color:  "#ffffff",
-        font_size: 14,
-        format: "12"
-      }
+      loading: true,
+      error: "",
+      headers: [],
+      rows: [],
     };
   },
+  computed: {
+    excelUrl() {
+      const base = import.meta.env.BASE_URL || "/";
+      const file = this.urls.replace(/^\//, "");
+      return `${base}${file}`;
+    },
+  },
   mounted() {
-    this.getData();
+    this.loadSheet();
   },
   methods: {
-    getData() {
-      // 使用Axios获取Excel文件
-      axios.get(this.excelUrl, { responseType: 'arraybuffer' })
-          .then(response => {
-            // 将响应的二进制数据转换为Excel的workbook对象
-            const workbook = xlsx.read(response.data, { type: 'buffer' });
-   
+    formatCell(value) {
+      if (value === null || value === undefined) return "";
+      const text = String(value).trim();
+      return text === "" ? "—" : text;
+    },
 
-            var sheetName = "";
-            // 获取第一个sheet
-            workbook.SheetNames.forEach(vo=> {
-              if(vo === this.name) {
-                sheetName = vo;
-                return;
-              }
-            })
+    async loadSheet() {
+      this.loading = true;
+      this.error = "";
+      this.headers = [];
+      this.rows = [];
 
-            // const sheetName = workbook.SheetNames[this.i];
-            const sheet = workbook.Sheets[sheetName];
-            console.log(sheet);
-            // 将sheet转换为JSON对象数组
-            const jsonData = xlsx.utils.sheet_to_json(sheet,{
-              head: 0,
-              defval: " "});
-            console.log(jsonData);
-            var data = []
-            var firstObject = jsonData[0];
-            var firstObjects = Object.keys(firstObject);
-            this.tableData.push(firstObjects);
-            jsonData.forEach(row => {
-              var obj = Object.values(row);
-              this.tableData.push(obj);
-            })
-            // 打印JSON数据
-            console.log(data);
-            return data;
-          })
-          .catch(error => {
-            console.error('Error fetching Excel file:', error);
+      try {
+        const response = await axios.get(this.excelUrl, {
+          responseType: "arraybuffer",
+        });
+
+        const workbook = xlsx.read(response.data, { type: "array" });
+        const matchedSheet = workbook.SheetNames.find(
+          (name) => name === this.sheetName,
+        );
+
+        if (!matchedSheet) {
+          this.error = `未找到工作表「${this.sheetName}」，可用：${workbook.SheetNames.join("、") || "无"}`;
+          return;
+        }
+
+        const sheet = workbook.Sheets[matchedSheet];
+        const jsonData = xlsx.utils.sheet_to_json(sheet, {
+          header: 1,
+          defval: "",
+          raw: false,
+        });
+
+        if (!jsonData.length) return;
+
+        const [headerRow, ...bodyRows] = jsonData;
+        this.headers = headerRow.map((cell) => this.formatCell(cell));
+        this.rows = bodyRows
+          .filter((row) => row.some((cell) => String(cell ?? "").trim() !== ""))
+          .map((row) => {
+            const cells = [...row];
+            while (cells.length < this.headers.length) cells.push("");
+            return cells.slice(0, this.headers.length).map((cell) => this.formatCell(cell));
           });
-    }
-  }
+      } catch (err) {
+        this.error = `表格加载失败：${err?.message || "请检查文件路径与网络"}`;
+      } finally {
+        this.loading = false;
+      }
+    },
+  },
 };
 </script>
 
-<style>
-.table-container {
-  overflow-x: auto;
-  white-space: nowrap;
-  height: 400px;
-  display: flex;
+<style scoped>
+.table-utils {
+  margin: 1rem 0;
+  font-size: 14px;
+  line-height: 1.5;
 }
-/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
-::-webkit-scrollbar {
+
+.table-utils__status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 120px;
+  padding: 1.5rem;
+  color: var(--vp-c-text-2);
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+}
+
+.table-utils__status--error {
+  color: var(--vp-c-danger-1);
+  background: var(--vp-c-danger-soft);
+  border-color: color-mix(in srgb, var(--vp-c-danger-1) 25%, transparent);
+}
+
+.table-utils__spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--vp-c-divider);
+  border-top-color: var(--vp-c-brand-1);
+  border-radius: 50%;
+  animation: table-utils-spin 0.7s linear infinite;
+}
+
+@keyframes table-utils-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.table-utils__scroll {
+  overflow: auto;
+  max-height: min(480px, 70vh);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  background: var(--vp-c-bg);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--vp-c-text-1) 6%, transparent);
+}
+
+.table-utils__scroll::-webkit-scrollbar {
   width: 8px;
   height: 8px;
-  background-color: #f5f5f5;
 }
 
-/*定义滚动条轨道 内阴影+圆角*/
-::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgb(186, 183, 183);
-  border-radius: 10px;
-  background-color: #f5f5f5;
+.table-utils__scroll::-webkit-scrollbar-track {
+  background: var(--vp-c-bg-soft);
+  border-radius: 4px;
 }
 
-/*定义滑块 内阴影+圆角*/
-::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 6px rgb(186, 183, 183);
-  background-color: rgb(190, 190, 190);
+.table-utils__scroll::-webkit-scrollbar-thumb {
+  background: var(--vp-c-divider);
+  border-radius: 4px;
 }
 
+.table-utils__scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--vp-c-text-3);
+}
 
-
-
-table {
-  display: inline-block;
+.table-utils__table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
   white-space: nowrap;
 }
 
-table  tr:nth-child(1)
-{
-  background-color: #9a9696;
+.table-utils__table thead th {
   position: sticky;
   top: 0;
+  z-index: 1;
+  padding: 10px 14px;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+  text-align: left;
+  background: var(--vp-c-bg-soft);
+  border-bottom: 1px solid var(--vp-c-divider);
+  box-shadow: 0 1px 0 var(--vp-c-divider);
 }
 
-th, td {
-  border: 1px solid black;
-  padding: 8px;
-  text-align: center;
+.table-utils__table tbody td {
+  padding: 8px 14px;
+  color: var(--vp-c-text-1);
+  text-align: left;
+  border-bottom: 1px solid var(--vp-c-divider);
+  vertical-align: middle;
 }
 
+.table-utils__table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table-utils__table tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--vp-c-bg-soft) 60%, transparent);
+}
+
+.table-utils__table tbody tr:hover {
+  background: var(--vp-c-default-soft);
+}
+
+@media (max-width: 640px) {
+  .table-utils__table thead th,
+  .table-utils__table tbody td {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+}
 </style>

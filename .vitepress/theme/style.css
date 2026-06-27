@@ -141,11 +141,33 @@
 
 :root {
   --vp-sidebar-width: 240px;
-  --vp-aside-width: 300px;
-  --vp-layout-max-width: 1600px;
+  --vp-aside-width: 280px;
+  --vp-layout-max-width: 1920px;
+  /* 侧栏与正文区背景区分 */
+  --vp-sidebar-bg-color: var(--vp-c-bg-alt);
+  --vp-doc-aside-bg: var(--vp-c-bg-alt);
+  --vp-doc-content-bg: var(--vp-c-bg);
+  /* 宽屏右侧留白宽度（仅 viewport > layout-max-width 时有值） */
+  --vp-doc-aside-gutter: max(0px, (100vw - var(--vp-layout-max-width)) / 2);
 }
 
-/* 左侧导航文字换行 */
+.dark {
+  --vp-sidebar-bg-color: var(--vp-c-bg-alt);
+  --vp-doc-aside-bg: var(--vp-c-bg-alt);
+  --vp-doc-content-bg: var(--vp-c-bg);
+}
+
+/* 文档正文区加宽：表格、代码块等占满中间区域 */
+@media (min-width: 1280px) {
+  .VPDoc.has-aside .vp-doc {
+    width: 100%;
+    max-width: none;
+  }
+
+  .VPDoc.has-aside .vp-doc table {
+    width: 100%;
+  }
+}
 @media (min-width: 960px) {
   .VPSidebar .text {
     white-space: normal;
@@ -164,14 +186,58 @@
     line-height: 1.4;
   }
 }
-@media{
+/* 左右侧栏背景与中间正文区分 */
+@media (min-width: 960px) {
   .VPSidebar {
-    background-color: var(--vp-nav-bg-color) !important;
+    background-color: var(--vp-sidebar-bg-color) !important;
+    border-right: 1px solid var(--vp-c-divider);
+  }
+
+  .VPSidebar .curtain {
+    background: linear-gradient(transparent, var(--vp-sidebar-bg-color) 70%) !important;
+  }
+
+  .VPDoc .content {
+    background-color: var(--vp-doc-content-bg);
   }
 }
-@media{
-  .curtain {
-    background-color: var(--vp-nav-bg-color) !important;
+
+/* 右侧目录区：隐藏滚动条，保留滚轮/触控滑动 */
+@media (min-width: 1280px) {
+  .VPDoc.has-aside .doc-aside-nav {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .VPDoc.has-aside .doc-aside-nav::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+
+  /* 宽屏右侧留白背景（仅填充 padding 区，不侵入正文列） */
+  .VPDoc.has-aside .aside::after {
+    content: '';
+    position: fixed;
+    top: calc(var(--vp-nav-height) + var(--vp-layout-top-height, 0px));
+    right: 0;
+    z-index: 0;
+    width: var(--vp-doc-aside-gutter);
+    height: calc(100vh - var(--vp-nav-height) - var(--vp-layout-top-height, 0px));
+    height: calc(100dvh - var(--vp-nav-height) - var(--vp-layout-top-height, 0px));
+    background-color: var(--vp-doc-aside-bg);
+    pointer-events: none;
+  }
+
+  /* 长页面时隐藏浏览器最右侧滚动条（仍可滚轮滚动） */
+  html:has(.VPDoc.has-aside) {
+    scrollbar-width: none;
+  }
+
+  html:has(.VPDoc.has-aside)::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
   }
 }
 @media{

@@ -81,7 +81,7 @@ function shouldHaveAutoHome(relativeDir) {
   return parts[0] === "docs" && parts.length === 2;
 }
 
-/** docs/test/group-java/thread -> docs/test */
+/** docs/测试/group-java/thread -> docs/测试 */
 function getSectionRoot(relativePath) {
   const parts = relativePath.replace(/\\/g, "/").split("/");
   if (parts[0] === "docs" && parts.length >= 2) {
@@ -98,7 +98,7 @@ function getDirDepth(relativePath, sectionRoot) {
   return rest ? rest.split("/").length : 0;
 }
 
-/** docs/test/group-java/thread -> docs/test/group-java */
+/** docs/测试/group-java/thread -> docs/测试/group-java */
 function getL2Root(relativePath) {
   const sectionRoot = getSectionRoot(relativePath);
   const depth = getDirDepth(relativePath, sectionRoot);
@@ -173,7 +173,7 @@ function buildDirTree(dirPath, urlPath) {
       if (subItems.length > 0) {
         items.push({
           text: label,
-          collapsed: false,
+          collapsed: true,
           items: subItems,
         });
       } else {
@@ -282,7 +282,7 @@ function buildL3AndBelowSidebar(l2RelativePath) {
     if (subItems.length > 0) {
       items.push({
         text: label,
-        collapsed: false,
+        collapsed: true,
         items: subItems,
       });
     } else {
@@ -367,7 +367,7 @@ export const generateAllSidebars = () => {
   return sidebar;
 };
 
-/** 一级 section 用短 key（learn）；二级目录不再生成 home 卡片 */
+/** 一级 section 用短 key（笔记）；二级目录不再生成 home 卡片 */
 export const generateHomeFeaturesMap = () => {
   const map = {};
 
