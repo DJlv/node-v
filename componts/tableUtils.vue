@@ -1,4 +1,4 @@
-<!-- 从 public 目录读取 Excel 并渲染为表格 -->
+<!-- 从 docs 同目录 excel 子目录读取 Excel 并渲染为表格 -->
 <template>
   <div class="table-utils">
     <div v-if="loading" class="table-utils__status">
@@ -101,6 +101,8 @@
 import axios from "axios";
 import * as xlsx from "xlsx";
 
+import { buildDocsAssetUrl } from "../utils/docs-asset-url.js";
+
 export default {
   props: {
     urls: { type: String, required: true },
@@ -122,9 +124,11 @@ export default {
   },
   computed: {
     excelUrl() {
-      const base = import.meta.env.BASE_URL || "/";
-      const file = this.urls.replace(/^\//, "");
-      return `${base}${file}`;
+      return buildDocsAssetUrl(
+        this.urls,
+        import.meta.env.BASE_URL || "/",
+        import.meta.env.DEV,
+      );
     },
     colSynced() {
       return (
@@ -430,6 +434,12 @@ export default {
       event.preventDefault();
     },
 
+    isWorkbookBuffer(buffer) {
+      if (!buffer || buffer.byteLength < 4) return false;
+      const header = new Uint8Array(buffer.slice(0, 4));
+      return header[0] === 0x50 && header[1] === 0x4b;
+    },
+
     async loadSheet() {
       this.loading = true;
       this.error = "";
@@ -441,12 +451,48 @@ export default {
       try {
         const response = await axios.get(this.excelUrl, {
           responseType: "arraybuffer",
+          validateStatus: () => true,
         });
 
-        const workbook = xlsx.read(response.data, { type: "array" });
-        const matchedSheet = workbook.SheetNames.find(
+        if (response.status === 404) {
+          this.error = `表格文件未找到：${this.urls}（路径 ${this.excelUrl}）`;
+          return;
+        }
+
+        if (response.status === 422) {
+          this.error = `表格文件为空（0 字节）：${this.urls}，请用 Excel 重新保存后再试`;
+          return;
+        }
+
+        if (response.status >= 400) {
+          this.error = `表格加载失败：${this.urls}（HTTP ${response.status}）`;
+          return;
+        }
+
+        const buffer = response.data;
+        if (!buffer || buffer.byteLength === 0) {
+          this.error = `表格文件为空（0 字节）：${this.urls}，请用 Excel 重新保存后再试`;
+          return;
+        }
+
+        if (!this.isWorkbookBuffer(buffer)) {
+          const head = new TextDecoder().decode(new Uint8Array(buffer.slice(0, 32)));
+          if (/^\s*</.test(head)) {
+            this.error = `表格资源请求异常（返回了 HTML 而非 xlsx）：${this.urls}`;
+          } else {
+            this.error = `表格文件损坏或格式无效：${this.urls}`;
+          }
+          return;
+        }
+
+        const workbook = xlsx.read(buffer, { type: "array" });
+        let matchedSheet = workbook.SheetNames.find(
           (name) => name === this.sheetName,
         );
+
+        if (!matchedSheet && workbook.SheetNames.length) {
+          matchedSheet = workbook.SheetNames[0];
+        }
 
         if (!matchedSheet) {
           this.error = `未找到工作表「${this.sheetName}」，可用：${workbook.SheetNames.join("、") || "无"}`;

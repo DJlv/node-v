@@ -106,11 +106,11 @@ export default withMermaid({
     },
     vite: {
         plugins: [
+            docsCoLocatedImgPlugin("/node-v/"),
             autoHomeWatchPlugin(),
             patchVPDocAsideWidth(),
             homeFeaturesPlugin(homeFeaturesMap),
             patchHomeFeaturesComponent(),
-            docsCoLocatedImgPlugin("/node-v/"),
         ],
         resolve: {
             alias: [

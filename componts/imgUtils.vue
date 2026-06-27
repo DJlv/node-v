@@ -9,6 +9,8 @@
 </template>
 
 <script>
+import { buildDocsAssetUrl } from "../utils/docs-asset-url.js";
+
 export default {
   props: {
     urls: { type: String, required: true },
@@ -16,13 +18,11 @@ export default {
   },
   computed: {
     url() {
-      const base = import.meta.env.BASE_URL || "/";
-      const file = String(this.urls || "").replace(/^\//, "");
-      const encoded = file
-        .split("/")
-        .map((segment) => encodeURIComponent(segment))
-        .join("/");
-      return `${base}${encoded}`;
+      return buildDocsAssetUrl(
+        this.urls,
+        import.meta.env.BASE_URL || "/",
+        import.meta.env.DEV,
+      );
     },
   },
   methods: {
