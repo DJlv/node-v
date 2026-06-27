@@ -23,19 +23,22 @@
               <table
                 ref="headTableRef"
                 class="table-utils__table table-utils__table--head"
-                :class="{ 'table-utils__table--synced': colSynced }"
                 :style="tableStyle"
               >
                 <colgroup>
                   <col
-                    v-for="(width, index) in colWidths"
+                    v-for="(header, index) in headers"
                     :key="`hc-${index}`"
-                    :style="colStyle(width)"
+                    :style="colStyle(colWidths[index])"
                   />
                 </colgroup>
                 <thead>
                   <tr>
-                    <th v-for="(col, index) in headers" :key="`h-${index}`">
+                    <th
+                      v-for="(col, index) in headers"
+                      :key="`h-${index}`"
+                      :style="cellStyle(index)"
+                    >
                       {{ formatCell(col) }}
                     </th>
                   </tr>
@@ -53,19 +56,22 @@
                   <table
                     ref="bodyTableRef"
                     class="table-utils__table table-utils__table--body"
-                    :class="{ 'table-utils__table--synced': colSynced }"
                     :style="tableStyle"
                   >
                     <colgroup>
                       <col
-                        v-for="(width, index) in colWidths"
+                        v-for="(header, index) in headers"
                         :key="`bc-${index}`"
-                        :style="colStyle(width)"
+                        :style="colStyle(colWidths[index])"
                       />
                     </colgroup>
                     <tbody>
                       <tr v-for="(row, rowIndex) in rows" :key="`r-${rowIndex}`">
-                        <td v-for="(cell, colIndex) in row" :key="`c-${rowIndex}-${colIndex}`">
+                        <td
+                          v-for="(cell, colIndex) in row"
+                          :key="`c-${rowIndex}-${colIndex}`"
+                          :style="cellStyle(colIndex)"
+                        >
                           {{ formatCell(cell) }}
                         </td>
                       </tr>
@@ -111,6 +117,7 @@ export default {
       hasHorizontalScroll: false,
       syncingScroll: false,
       resizeObserver: null,
+      loadingSheet: false,
     };
   },
   computed: {
@@ -120,27 +127,37 @@ export default {
       return `${base}${file}`;
     },
     colSynced() {
-      return this.colWidths.length === this.headers.length && this.colWidths.length > 0;
+      return (
+        this.colWidths.length === this.headers.length &&
+        this.colWidths.length > 0 &&
+        this.colWidths.every((width) => width > 0)
+      );
     },
     tableTotalWidth() {
       if (!this.colSynced) return 0;
       return this.colWidths.reduce((sum, width) => sum + width, 0);
     },
     tableStyle() {
-      if (!this.colSynced) return undefined;
+      if (!this.colSynced) return { width: "max-content" };
       const width = `${this.tableTotalWidth}px`;
       return { width, minWidth: width };
     },
     panStyle() {
-      return { transform: `translate3d(-${this.scrollX}px, 0, 0)` };
+      const style = { transform: `translate3d(-${this.scrollX}px, 0, 0)` };
+      if (this.colSynced) {
+        style.width = `${this.tableTotalWidth}px`;
+      }
+      return style;
     },
   },
   watch: {
     rows() {
+      if (this.loadingSheet) return;
       this.colWidths = [];
       this.$nextTick(() => this.updateLayout());
     },
     headers() {
+      if (this.loadingSheet) return;
       this.colWidths = [];
       this.$nextTick(() => this.updateLayout());
     },
@@ -160,7 +177,144 @@ export default {
     },
 
     colStyle(width) {
-      return width ? { width: `${width}px`, minWidth: `${width}px`, maxWidth: `${width}px` } : undefined;
+      if (!width) return undefined;
+      return { width: `${width}px` };
+    },
+
+    cellStyle(index) {
+      const width = this.colWidths[index];
+      if (!width) return undefined;
+      return {
+        width: `${width}px`,
+        minWidth: `${width}px`,
+        maxWidth: `${width}px`,
+        boxSizing: "border-box",
+      };
+    },
+
+    computeColWidths() {
+      const sampleSize = Math.min(this.rows.length, 100);
+      const wrapWidth = 320;
+      const maxSingleLine = 640;
+
+      return this.headers.map((header, index) => {
+        let maxWidth = this.estimateTextWidth(header);
+        let maxChars = String(header ?? "").length;
+
+        for (let rowIndex = 0; rowIndex < sampleSize; rowIndex += 1) {
+          const cell = this.rows[rowIndex][index];
+          const text = String(cell ?? "");
+          maxWidth = Math.max(maxWidth, this.estimateTextWidth(cell));
+          maxChars = Math.max(maxChars, text.length);
+        }
+
+        const fitted = Math.max(Math.ceil(maxWidth) + 28, 80);
+        if (maxChars > 32 || fitted > 280) {
+          return wrapWidth;
+        }
+        return Math.min(fitted, maxSingleLine);
+      });
+    },
+
+    buildGridFromSheet(sheet) {
+      const positions = [];
+
+      for (const key of Object.keys(sheet)) {
+        if (key[0] === "!") continue;
+        try {
+          positions.push(xlsx.utils.decode_cell(key));
+        } catch {
+          // ignore invalid keys
+        }
+      }
+
+      const jsonRows = xlsx.utils.sheet_to_json(sheet, {
+        header: 1,
+        defval: "",
+        blankrows: true,
+      });
+
+      let rows = [];
+      let colCount = 1;
+
+      if (positions.length) {
+        const startRow = Math.min(...positions.map((pos) => pos.r));
+        const endRow = Math.max(...positions.map((pos) => pos.r));
+        const startCol = Math.min(...positions.map((pos) => pos.c));
+        const endCol = Math.max(...positions.map((pos) => pos.c));
+        colCount = endCol - startCol + 1;
+
+        for (let rowIndex = startRow; rowIndex <= endRow; rowIndex += 1) {
+          const row = [];
+          for (let colIndex = startCol; colIndex <= endCol; colIndex += 1) {
+            const address = xlsx.utils.encode_cell({ r: rowIndex, c: colIndex });
+            const cell = sheet[address];
+            row.push(cell == null ? "" : String(cell.w ?? cell.v ?? ""));
+          }
+          rows.push(row);
+        }
+      }
+
+      const jsonColCount = jsonRows.reduce((max, row) => {
+        if (!Array.isArray(row)) return max;
+        let lastIndex = -1;
+        row.forEach((cell, index) => {
+          if (String(cell ?? "").trim() !== "") lastIndex = index;
+        });
+        return Math.max(max, lastIndex + 1, row.length);
+      }, 0);
+
+      colCount = Math.max(colCount, jsonColCount, 1);
+
+      if (!rows.length && jsonRows.length) {
+        rows = jsonRows.map((row) => {
+          const cells = Array.isArray(row) ? row.map((cell) => cell ?? "") : [];
+          while (cells.length < colCount) cells.push("");
+          return cells.slice(0, colCount);
+        });
+      } else if (colCount > (rows[0]?.length ?? 0)) {
+        rows = rows.map((row) => {
+          const cells = [...row];
+          while (cells.length < colCount) cells.push("");
+          return cells.slice(0, colCount);
+        });
+      }
+
+      return { rows, colCount };
+    },
+
+    isColumnLetterRow(row) {
+      const cells = row
+        .map((cell) => String(cell ?? "").trim())
+        .filter((cell) => cell !== "");
+      if (cells.length < 2) return false;
+      return cells.every((cell) => /^[A-Z]{1,3}$/.test(cell));
+    },
+
+    findHeaderRowIndex(jsonData, padRow) {
+      let bestIndex = 0;
+      let bestFilled = 0;
+
+      for (let index = 0; index < Math.min(jsonData.length, 20); index += 1) {
+        const row = padRow(jsonData[index]);
+        if (this.isColumnLetterRow(row)) continue;
+
+        const filled = row.filter((cell) => String(cell ?? "").trim() !== "").length;
+        if (filled > bestFilled) {
+          bestFilled = filled;
+          bestIndex = index;
+        }
+      }
+
+      if (bestFilled >= 2) return bestIndex;
+
+      for (let index = 0; index < Math.min(jsonData.length, 20); index += 1) {
+        const row = padRow(jsonData[index]);
+        const filled = row.filter((cell) => String(cell ?? "").trim() !== "").length;
+        if (filled >= 2) return index;
+      }
+
+      return 0;
     },
 
     observeTargets() {
@@ -174,33 +328,26 @@ export default {
       if (bodyTable) this.resizeObserver.observe(bodyTable);
     },
 
-    measureColWidths() {
+    estimateTextWidth(text) {
+      const sample = String(text ?? "");
+      let width = 0;
+      for (const char of sample) {
+        width += /[\u4e00-\u9fff]/.test(char) ? 14 : 8;
+      }
+      return width;
+    },
+
+    syncFrameHeight() {
+      const frame = this.$el?.querySelector(".table-utils__frame");
       const headTable = this.$refs.headTableRef;
       const bodyTable = this.$refs.bodyTableRef;
-      if (!headTable || !bodyTable || !this.headers.length) return false;
+      const hScroll = this.$refs.hScrollRef;
+      if (!frame || !headTable || !bodyTable) return;
 
-      const colCount = this.headers.length;
-      const widths = Array(colCount).fill(0);
-
-      headTable.querySelectorAll("thead th").forEach((cell, index) => {
-        widths[index] = Math.max(widths[index], cell.offsetWidth);
-      });
-
-      bodyTable.querySelectorAll("tbody tr").forEach((row) => {
-        row.querySelectorAll("td").forEach((cell, index) => {
-          widths[index] = Math.max(widths[index], cell.offsetWidth);
-        });
-      });
-
-      const next = widths.map((width) => Math.max(Math.ceil(width), 48));
-      const changed =
-        next.length !== this.colWidths.length ||
-        next.some((width, index) => width !== this.colWidths[index]);
-
-      if (changed) {
-        this.colWidths = next;
-      }
-      return changed;
+      const maxHeight = Math.min(480, window.innerHeight * 0.7);
+      const hScrollHeight = this.hasHorizontalScroll ? hScroll?.offsetHeight || 12 : 0;
+      const naturalHeight = headTable.offsetHeight + bodyTable.offsetHeight + hScrollHeight + 2;
+      frame.style.height = `${Math.min(Math.max(naturalHeight, 120), maxHeight)}px`;
     },
 
     syncScrollMetrics() {
@@ -232,20 +379,13 @@ export default {
 
     updateLayout() {
       this.$nextTick(() => {
-        const widthChanged = this.measureColWidths();
-
-        const finalize = () => {
-          if (this.colSynced) {
-            this.measureColWidths();
-          }
-          this.syncScrollMetrics();
-        };
-
-        if (widthChanged) {
-          this.$nextTick(finalize);
-        } else {
-          finalize();
+        if (this.headers.length) {
+          this.colWidths = this.computeColWidths();
         }
+        this.syncScrollMetrics();
+        this.$nextTick(() => {
+          this.syncFrameHeight();
+        });
       });
     },
 
@@ -314,23 +454,31 @@ export default {
         }
 
         const sheet = workbook.Sheets[matchedSheet];
-        const jsonData = xlsx.utils.sheet_to_json(sheet, {
-          header: 1,
-          defval: "",
-          raw: false,
+        const { rows: gridRows, colCount } = this.buildGridFromSheet(sheet);
+
+        if (!gridRows.length) return;
+
+        const padRow = (row) => {
+          const cells = Array.isArray(row) ? row.map((cell) => cell ?? "") : [];
+          while (cells.length < colCount) cells.push("");
+          return cells.slice(0, colCount);
+        };
+
+        const headerRowIndex = this.findHeaderRowIndex(gridRows, padRow);
+        const headerRow = padRow(gridRows[headerRowIndex]);
+        const bodyRows = gridRows.slice(headerRowIndex + 1);
+
+        this.loadingSheet = true;
+        this.headers = headerRow.map((cell, index) => {
+          const text = this.formatCell(cell);
+          return text === "—" ? `列 ${index + 1}` : text;
         });
-
-        if (!jsonData.length) return;
-
-        const [headerRow, ...bodyRows] = jsonData;
-        this.headers = headerRow.map((cell) => this.formatCell(cell));
         this.rows = bodyRows
-          .filter((row) => row.some((cell) => String(cell ?? "").trim() !== ""))
-          .map((row) => {
-            const cells = [...row];
-            while (cells.length < this.headers.length) cells.push("");
-            return cells.slice(0, this.headers.length).map((cell) => this.formatCell(cell));
-          });
+          .filter((row) => padRow(row).some((cell) => String(cell ?? "").trim() !== ""))
+          .map((row) => padRow(row).map((cell) => this.formatCell(cell)));
+        this.colWidths = this.computeColWidths();
+        this.loadingSheet = false;
+        this.scrollX = 0;
 
         this.$nextTick(() => this.updateLayout());
       } catch (err) {
@@ -390,8 +538,9 @@ export default {
 .table-utils__frame {
   display: flex;
   flex-direction: column;
-  height: min(480px, 70vh);
+  height: auto;
   max-height: min(480px, 70vh);
+  min-height: 120px;
   min-width: 0;
   border: 1px solid var(--vp-c-divider);
   border-radius: 8px;
@@ -414,7 +563,6 @@ export default {
   width: 100%;
   max-width: 100%;
   overflow: clip;
-  background-color: color-mix(in srgb, var(--vp-c-bg-soft) 55%, #fff 45%);
   border-bottom: 1px solid var(--vp-c-divider);
 }
 
@@ -446,14 +594,12 @@ export default {
 .table-utils__body-sizer {
   width: 100%;
   overflow: clip;
-  contain: inline-size;
 }
 
 .table-utils__clip-inner {
   width: 100%;
   max-width: 100%;
   overflow: clip;
-  contain: inline-size;
 }
 
 .table-utils__pan {
@@ -501,12 +647,8 @@ export default {
 .table-utils__table {
   border-collapse: separate;
   border-spacing: 0;
-  white-space: nowrap;
-  table-layout: auto;
-}
-
-.table-utils__table--synced {
   table-layout: fixed;
+  width: max-content;
 }
 
 .table-utils__table--head thead th,
@@ -514,20 +656,27 @@ export default {
   box-sizing: border-box;
   padding: 8px 14px;
   text-align: left;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  vertical-align: top;
 }
 
 .table-utils__table--head thead th {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
   font-weight: 600;
   color: var(--vp-c-text-1);
   background-color: color-mix(in srgb, var(--vp-c-bg-soft) 55%, #fff 45%);
 }
 
 .table-utils__table--body tbody td {
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  overflow: visible;
+  line-height: 1.45;
   color: var(--vp-c-text-1);
   border-bottom: 1px solid var(--vp-c-divider);
-  vertical-align: middle;
   background-color: var(--vp-c-bg);
 }
 
@@ -554,6 +703,37 @@ export default {
 
 <!-- 强制隐藏表格内部所有滚动条，仅保留底部 hscroll -->
 <style>
+.vp-doc .table-utils .table-utils__table {
+  display: table !important;
+  overflow: visible !important;
+  margin: 0 !important;
+}
+
+.vp-doc .table-utils .table-utils__table thead {
+  display: table-header-group !important;
+}
+
+.vp-doc .table-utils .table-utils__table tbody {
+  display: table-row-group !important;
+}
+
+.vp-doc .table-utils .table-utils__table tr {
+  display: table-row !important;
+}
+
+.vp-doc .table-utils .table-utils__table th,
+.vp-doc .table-utils .table-utils__table td {
+  display: table-cell !important;
+}
+
+.vp-doc .table-utils .table-utils__table colgroup {
+  display: table-column-group !important;
+}
+
+.vp-doc .table-utils .table-utils__table col {
+  display: table-column !important;
+}
+
 .table-utils .table-utils__main,
 .table-utils .table-utils__head-clip,
 .table-utils .table-utils__body-clip,

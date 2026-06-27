@@ -174,7 +174,10 @@
   }
 
   .VPDoc.has-aside .vp-doc table:not(.table-utils__table) {
+    display: table !important;
     width: 100%;
+    table-layout: auto;
+    overflow-x: visible;
   }
 }
 @media (min-width: 960px) {
@@ -448,6 +451,40 @@
   height: auto;
   display: block;
   margin: 20px auto;
+}
+
+/* Markdown 表格：恢复 table 布局（VitePress 默认 display:block 会撑乱列宽） */
+.vp-doc table:not(.table-utils__table) {
+  display: table !important;
+  width: 100%;
+  max-width: 100%;
+  table-layout: auto;
+  overflow-x: visible;
+  border-collapse: collapse;
+}
+
+/* Excel 表格：不受 vp-doc table 规则影响 */
+.vp-doc .table-utils .table-utils__table {
+  display: table !important;
+  overflow: visible !important;
+  margin: 0 !important;
+}
+
+.vp-doc .table-utils .table-utils__table thead {
+  display: table-header-group !important;
+}
+
+.vp-doc .table-utils .table-utils__table tbody {
+  display: table-row-group !important;
+}
+
+.vp-doc .table-utils .table-utils__table tr {
+  display: table-row !important;
+}
+
+.vp-doc .table-utils .table-utils__table th,
+.vp-doc .table-utils .table-utils__table td {
+  display: table-cell !important;
 }
 
 @media{
