@@ -3,7 +3,6 @@ import { useData, useRoute } from "vitepress";
 import DefaultTheme from "vitepress/theme";
 import "./style.css";
 import "./code-block-fold.css";
-import "./aside-override.css";
 
 import imgUtils from "../../docs/componts/imgUtils.vue";
 import tableUtils from "../../docs/componts/tableUtils.vue";

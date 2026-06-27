@@ -183,17 +183,6 @@
   }
 }
 
-/* 右侧文章目录：允许换行、占满侧栏宽度 */
-@media (min-width: 1280px) {
-  .VPDocAsideOutline .outline-link {
-    white-space: normal;
-    word-break: break-word;
-    overflow-wrap: anywhere;
-    line-height: 1.4;
-    overflow: visible;
-    text-overflow: unset;
-  }
-}
 /* 左右侧栏背景与中间正文区分 */
 @media (min-width: 960px) {
   .VPSidebar {
@@ -284,12 +273,13 @@
     display: flex;
     flex-direction: column;
     flex: 1 1 auto;
-    width: 100%;
+    width: 100% !important;
+    max-width: 100% !important;
     min-height: 0;
     overflow: hidden;
     border-left: 1px solid var(--vp-c-divider);
     padding-left: 16px;
-    padding-right: 4px;
+    padding-right: 8px;
     box-sizing: border-box;
   }
 
@@ -307,6 +297,8 @@
   .VPDoc.has-aside .VPDocAsideOutline nav {
     flex: 1 1 auto;
     min-height: 0;
+    width: 100% !important;
+    max-width: 100% !important;
     max-height: calc(var(--vp-doc-aside-height) - var(--vp-doc-aside-title-height) - 32px);
     overflow-x: hidden;
     overflow-y: auto;
@@ -319,6 +311,25 @@
     width: 0;
     height: 0;
     display: none;
+  }
+
+  /* 目录链接：!important 覆盖 VitePress 组件 scoped 的 nowrap */
+  .VPDoc.has-aside .VPDocAsideOutline .outline-link,
+  .VPDoc.has-aside .VPDocOutlineItem .outline-link {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    line-height: 1.45 !important;
+  }
+
+  .VPDoc.has-aside .aside-content {
+    width: 100% !important;
+    max-width: 360px !important;
   }
 
   /* 目录当前项：仅变色，避免大面积蓝色背景块 */

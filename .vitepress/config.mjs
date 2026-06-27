@@ -13,10 +13,28 @@ import { autoHomeWatchPlugin } from "./plugins/auto-home.mjs"
 const configDir = path.dirname(fileURLToPath(import.meta.url));
 const customVPDoc = path.resolve(configDir, "theme/components/VPDoc.vue");
 
+/** 写入 HTML，确保线上一定加载（优先级高于组件 scoped 样式） */
+const asideFixStyle = `
+@media (min-width:1280px){
+  .VPDoc.has-aside .aside,
+  .VPDoc.has-aside .aside-container,
+  .VPDoc.has-aside .aside-curtain,
+  .VPDoc.has-aside .doc-aside-panel{
+    width:360px!important;min-width:360px!important;max-width:360px!important;flex:0 0 360px!important;
+  }
+  .VPDoc.has-aside .VPDocAsideOutline .outline-link{
+    white-space:normal!important;overflow:visible!important;text-overflow:unset!important;
+    word-break:break-word!important;display:block!important;width:100%!important;
+  }
+}`;
+
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
     base: '/node-v/',
-    head: [["link", {rel: "icon", href: "/node-v/logo.svg"}]],
+    head: [
+        ["link", {rel: "icon", href: "/node-v/logo.svg"}],
+        ["style", {}, asideFixStyle],
+    ],
     title: "文档网站",
     description: "",
     themeConfig: {

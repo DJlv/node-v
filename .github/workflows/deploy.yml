@@ -32,8 +32,14 @@ jobs:
           npm run docs:build
           touch .vitepress/dist/.nojekyll
 
+      - name: Verify theme CSS bundled
+        run: |
+          grep -rq "360px" .vitepress/dist/assets/*.css
+          grep -rq "outline-link" .vitepress/dist/assets/*.css
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: .vitepress/dist
+          # 仓库 Settings → Pages → Source 须选 gh-pages 分支 / root
