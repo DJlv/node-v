@@ -53,7 +53,7 @@ export default withMermaid({
     title: "文档网站",
     description: "",
     themeConfig: {
-        outlineTitle: "文章目录",
+        outlineTitle: "--",
         outline: [1, 6],
         // 顶部导航栏配置
         nav: navbar,
