@@ -76,12 +76,12 @@ export default withMermaid({
             patchHomeFeaturesComponent(),
         ],
         resolve: {
-            alias: {
-                [path.resolve(
-                    configDir,
-                    "../node_modules/vitepress/dist/client/theme-default/components/VPDoc.vue",
-                )]: customVPDoc,
-            },
+            alias: [
+                {
+                    find: /vitepress[/\\]dist[/\\]client[/\\]theme-default[/\\]components[/\\]VPDoc\.vue$/,
+                    replacement: customVPDoc,
+                },
+            ],
         },
     },
     transformPageData(pageData) {

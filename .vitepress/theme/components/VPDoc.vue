@@ -134,10 +134,10 @@ const pageName = computed(() =>
   position: relative;
   display: none;
   order: 2;
-  flex: 0 0 var(--vp-doc-aside-width, var(--vp-aside-width, 320px));
-  width: var(--vp-doc-aside-width, var(--vp-aside-width, 320px));
-  min-width: var(--vp-doc-aside-width, var(--vp-aside-width, 320px));
-  max-width: var(--vp-doc-aside-width, var(--vp-aside-width, 320px));
+  flex: 0 0 var(--vp-doc-aside-width, var(--vp-aside-width, 360px));
+  width: var(--vp-doc-aside-width, var(--vp-aside-width, 360px));
+  min-width: var(--vp-doc-aside-width, var(--vp-aside-width, 360px));
+  max-width: var(--vp-doc-aside-width, var(--vp-aside-width, 360px));
 }
 
 .left-aside {
@@ -158,8 +158,8 @@ const pageName = computed(() =>
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    width: var(--vp-doc-aside-width, 320px);
-    min-width: var(--vp-doc-aside-width, 320px);
+    width: var(--vp-doc-aside-width, 360px);
+    min-width: var(--vp-doc-aside-width, 360px);
     height: var(--vp-doc-aside-height);
     max-height: var(--vp-doc-aside-height);
     background-color: transparent;

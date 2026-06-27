@@ -141,7 +141,7 @@
 
 :root {
   --vp-sidebar-width: 240px;
-  --vp-aside-width: 320px;
+  --vp-aside-width: 360px;
   --vp-layout-max-width: 1920px;
   /* 侧栏与正文区背景区分 */
   --vp-sidebar-bg-color: var(--vp-c-bg-alt);
@@ -216,8 +216,8 @@
     position: fixed;
     top: var(--vp-doc-aside-top);
     right: max(16px, var(--vp-doc-aside-gutter));
-    width: var(--vp-doc-aside-width, 320px);
-    min-width: var(--vp-doc-aside-width, 320px);
+    width: var(--vp-doc-aside-width, 360px);
+    min-width: var(--vp-doc-aside-width, 360px);
     height: var(--vp-doc-aside-height);
     max-height: var(--vp-doc-aside-height);
     z-index: 1;
@@ -229,15 +229,15 @@
 
   /* 兼容默认 / 自定义两种 VPDoc 结构 */
   .VPDoc.has-aside .aside {
-    flex: 0 0 var(--vp-doc-aside-width, 320px) !important;
-    width: var(--vp-doc-aside-width, 320px) !important;
-    min-width: var(--vp-doc-aside-width, 320px) !important;
-    max-width: var(--vp-doc-aside-width, 320px) !important;
+    flex: 0 0 var(--vp-doc-aside-width, 360px) !important;
+    width: var(--vp-doc-aside-width, 360px) !important;
+    min-width: var(--vp-doc-aside-width, 360px) !important;
+    max-width: var(--vp-doc-aside-width, 360px) !important;
   }
 
   .VPDoc.has-aside .aside-container,
   .VPDoc.has-aside .aside-curtain {
-    width: var(--vp-doc-aside-width, 320px) !important;
+    width: var(--vp-doc-aside-width, 360px) !important;
   }
 
   .VPDoc.has-aside .doc-aside-nav,
