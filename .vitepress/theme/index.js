@@ -4,9 +4,9 @@ import DefaultTheme from "vitepress/theme";
 import "./style.css";
 import "./code-block-fold.css";
 
-import imgUtils from "../../docs/componts/imgUtils.vue";
-import tableUtils from "../../docs/componts/tableUtils.vue";
-import svgUtils from "../../docs/componts/svgUtils.vue";
+import imgUtils from "../../componts/imgUtils.vue";
+import tableUtils from "../../componts/tableUtils.vue";
+import svgUtils from "../../componts/svgUtils.vue";
 import { useCodeBlockFold } from "../plugins/code-block-fold.mjs";
 
 /** @type {import('vitepress').Theme} */
