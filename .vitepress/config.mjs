@@ -9,6 +9,8 @@ import {
     patchHomeFeaturesComponent,
 } from "./plugins/home-features.mjs"
 import { autoHomeWatchPlugin } from "./plugins/auto-home.mjs"
+import { obsidianImageMarkdownConfig } from "./plugins/obsidian-image.mjs"
+import { docsCoLocatedImgPlugin } from "./plugins/docs-co-located-img.mjs"
 
 const configDir = path.dirname(fileURLToPath(import.meta.url));
 const customVPDoc = path.resolve(configDir, "theme/components/VPDoc.vue");
@@ -94,6 +96,7 @@ export default withMermaid({
     // 配置markdown扩展
     markdown: {
         lineNumbers: true, // 开启代码块行号
+        config: obsidianImageMarkdownConfig,
     },
     mermaid: {
         // refer https://mermaid.js.org/config/setup/modules/mermaidAPI.html#mermaidapi-configuration-defaults for options
@@ -107,6 +110,7 @@ export default withMermaid({
             patchVPDocAsideWidth(),
             homeFeaturesPlugin(homeFeaturesMap),
             patchHomeFeaturesComponent(),
+            docsCoLocatedImgPlugin("/node-v/"),
         ],
         resolve: {
             alias: [

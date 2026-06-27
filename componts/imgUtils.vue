@@ -18,7 +18,11 @@ export default {
     url() {
       const base = import.meta.env.BASE_URL || "/";
       const file = String(this.urls || "").replace(/^\//, "");
-      return `${base}${file}`;
+      const encoded = file
+        .split("/")
+        .map((segment) => encodeURIComponent(segment))
+        .join("/");
+      return `${base}${encoded}`;
     },
   },
   methods: {
