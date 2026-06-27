@@ -170,7 +170,7 @@
     max-width: none;
   }
 
-  .VPDoc.has-aside .vp-doc table {
+  .VPDoc.has-aside .vp-doc table:not(.table-utils__table) {
     width: 100%;
   }
 }
