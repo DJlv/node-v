@@ -22,9 +22,24 @@ const asideFixStyle = `
   .VPDoc.has-aside .doc-aside-panel{
     width:360px!important;min-width:360px!important;max-width:360px!important;flex:0 0 360px!important;
   }
+  .VPDoc.has-aside .doc-aside-nav,
+  .VPDoc.has-aside .aside-content{
+    background:var(--vp-c-bg-soft)!important;border:1px solid var(--vp-c-divider)!important;
+    border-radius:10px!important;padding:14px 12px 12px!important;box-sizing:border-box!important;
+  }
+  .VPDoc.has-aside .VPDocAsideOutline .outline-title{
+    margin:0 0 10px!important;padding:0 4px 10px!important;font-size:15px!important;
+    border-bottom:1px solid var(--vp-c-divider)!important;
+  }
   .VPDoc.has-aside .VPDocAsideOutline .outline-link{
     white-space:normal!important;overflow:visible!important;text-overflow:unset!important;
     word-break:break-word!important;display:block!important;width:100%!important;
+    padding:6px 10px!important;margin:2px 0!important;border-radius:6px!important;
+    font-size:13px!important;line-height:1.5!important;
+  }
+  .VPDoc.has-aside .VPDocAsideOutline .outline-link.active{
+    color:var(--vp-c-brand-1)!important;font-weight:500!important;
+    background:color-mix(in srgb,var(--vp-c-brand-soft) 70%,transparent)!important;
   }
 }`;
 
