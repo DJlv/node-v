@@ -1,11 +1,8 @@
-// https://vitepress.dev/guide/custom-theme
 import { h } from "vue";
 import { useData, useRoute } from "vitepress";
 import DefaultTheme from "vitepress/theme";
 import "./style.css";
 import "./code-block-fold.css";
-import ElementPlus from "element-plus";
-import "element-plus/dist/index.css";
 
 import imgUtils from "../../docs/componts/imgUtils.vue";
 import tableUtils from "../../docs/componts/tableUtils.vue";
@@ -25,7 +22,6 @@ export default {
     useCodeBlockFold({ route, frontmatter }, true, 3, 4);
   },
   enhanceApp({ app }) {
-    app.use(ElementPlus);
     app.component("imgUtils", imgUtils);
     app.component("tableUtils", tableUtils);
     app.component("svgUtils", svgUtils);

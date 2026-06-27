@@ -211,11 +211,21 @@
 /* 右侧目录区：固定布局 + 目录列表固定区域滚动 */
 @media (min-width: 1280px) {
   .VPDoc.has-aside .doc-aside-panel {
+    position: fixed;
     top: var(--vp-doc-aside-top);
     right: var(--vp-doc-aside-gutter);
     width: var(--vp-doc-aside-width);
     height: var(--vp-doc-aside-height);
     max-height: var(--vp-doc-aside-height);
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+    background-color: transparent;
+  }
+
+  .VPDoc.has-aside .doc-aside-nav,
+  .VPDoc.has-aside .doc-aside-fade {
+    pointer-events: auto;
   }
 
   .VPDoc.has-aside .doc-aside-nav {
@@ -290,6 +300,18 @@
     display: none;
   }
 
+  /* 目录当前项：仅变色，避免大面积蓝色背景块 */
+  .VPDocAsideOutline .outline-link.active {
+    background: transparent !important;
+    color: var(--vp-c-brand-1);
+  }
+
+  .VPDocAsideOutline .outline-marker {
+    width: 2px !important;
+    max-height: 32px;
+    background-color: var(--vp-c-brand-1);
+  }
+
   .VPDoc.has-aside .doc-aside-fade {
     display: none;
   }
@@ -335,16 +357,13 @@
   }
 } */
 
-/* 在你的VitePress项目的全局样式文件中 */
-img {
-  max-width: 50%;
-  /* 图片宽度不超过其容器宽度 */
-  height: 20%;
-  /* 图片高度自动缩放以保持比例 */
+/* 文档内图片 */
+.vp-doc img,
+.table-utils img {
+  max-width: 100%;
+  height: auto;
   display: block;
-  /* 图片以块级元素显示，可设置宽高 */
   margin: 20px auto;
-  /* 图片上下间距 */
 }
 
 @media{
