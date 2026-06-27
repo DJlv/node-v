@@ -61,7 +61,7 @@ function resolveDocsImgRequest(urlPath, base, projectRoot) {
   return filePath;
 }
 
-/** 让 docs/**/img/* 在 dev/build 均可通过 /docs/.../img/... 访问 */
+// docs 下各目录的 img 子目录在 dev/build 中均可通过 /docs/.../img/... 访问
 export function docsCoLocatedImgPlugin(base = "/node-v/") {
   const pluginDir = path.dirname(fileURLToPath(import.meta.url));
   const projectRoot = path.resolve(pluginDir, "../..");
