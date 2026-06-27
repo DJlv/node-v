@@ -1,1 +1,0 @@
-import{_ as e,c as t,o}from"./chunks/framework.DWd8h-mY.js";const m=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"docs/笔记/ue4/word.md","filePath":"docs/笔记/ue4/word.md"}'),r={name:"docs/笔记/ue4/word.md"};function a(s,c,d,n,p,_){return o(),t("div")}const f=e(r,[["render",a]]);export{m as __pageData,f as default};
