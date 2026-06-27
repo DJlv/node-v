@@ -59,8 +59,8 @@ export default withMermaid({
         nav: navbar,
         sidebar: sidebar,
         socialLinks: [
-            {icon: "github", link: "https://github.com/DJlv"},
-            {icon: "twitter", link: "https://vitepress.dev/zh/guide/what-is-vitepress"}
+            // {icon: "github", link: "https://github.com/DJlv"},
+            // {icon: "twitter", link: "https://vitepress.dev/zh/guide/what-is-vitepress"}
         ],
         // navbar: true, //开启导航栏，我设置成false也没啥用不知道为啥
         // sidebar: false, // 关闭侧边栏
