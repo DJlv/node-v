@@ -134,9 +134,10 @@ const pageName = computed(() =>
   position: relative;
   display: none;
   order: 2;
-  flex: 0 0 var(--vp-doc-aside-width, var(--vp-aside-width, 280px));
-  width: var(--vp-doc-aside-width, var(--vp-aside-width, 280px));
-  max-width: var(--vp-doc-aside-width, var(--vp-aside-width, 280px));
+  flex: 0 0 var(--vp-doc-aside-width, var(--vp-aside-width, 320px));
+  width: var(--vp-doc-aside-width, var(--vp-aside-width, 320px));
+  min-width: var(--vp-doc-aside-width, var(--vp-aside-width, 320px));
+  max-width: var(--vp-doc-aside-width, var(--vp-aside-width, 320px));
 }
 
 .left-aside {
@@ -152,12 +153,13 @@ const pageName = computed(() =>
   .doc-aside-panel {
     position: fixed;
     top: var(--vp-doc-aside-top);
-    right: var(--vp-doc-aside-gutter);
+    right: max(16px, var(--vp-doc-aside-gutter));
     z-index: 1;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    width: var(--vp-doc-aside-width);
+    width: var(--vp-doc-aside-width, 320px);
+    min-width: var(--vp-doc-aside-width, 320px);
     height: var(--vp-doc-aside-height);
     max-height: var(--vp-doc-aside-height);
     background-color: transparent;
