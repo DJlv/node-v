@@ -2,11 +2,13 @@
   "devDependencies": {
     "mermaid": "^10.8.0",
     "vitepress": "1.0.0-rc.35",
-    "vitepress-plugin-mermaid": "^2.0.16"
+    "vitepress-plugin-mermaid": "^2.0.16",
+    "vuepress-plugin-auto-sidebar": "^2.3.2"
   },
   "scripts": {
-    "docs:dev": "vitepress dev",
-    "docs:build": "vitepress build",
+    "docs:prep": "node utils/prep-docs.mjs",
+    "docs:dev": "node utils/prep-docs.mjs && vitepress dev",
+    "docs:build": "node utils/prep-docs.mjs && vitepress build",
     "docs:preview": "vitepress preview"
   },
   "dependencies": {
