@@ -16,7 +16,8 @@ const customVPDoc = path.resolve(configDir, "theme/components/VPDoc.vue");
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
     base: '/node-v/',
-    head: [["link", {rel: "icon", href: "/node-v/logo.svg"}]],    title: "文档网站",
+    head: [["link", {rel: "icon", href: "/node-v/logo.svg"}]],
+    title: "文档网站",
     description: "",
     themeConfig: {
         outlineTitle: "文章目录",
@@ -82,7 +83,8 @@ export default withMermaid({
                 )]: customVPDoc,
             },
         },
-    },    transformPageData(pageData) {
+    },
+    transformPageData(pageData) {
         if (pageData.frontmatter?.layout !== "home") return;
 
         const sectionDir = path.dirname(pageData.filePath).replace(/\\/g, "/");

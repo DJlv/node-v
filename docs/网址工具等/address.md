@@ -35,7 +35,7 @@ https://docs.wxpython.org/wx.py.html
 
 python 下载：
 
-```pip
+```bash
 pip install imgui[full] -i https://mirrors.aliyun.com/pypi/simple/
 
 pip install imgui[glfw] -i https://mirrors.aliyun.com/pypi/simple/
