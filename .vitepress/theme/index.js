@@ -7,6 +7,10 @@ import "./code-block-fold.css";
 import imgUtils from "../../componts/imgUtils.vue";
 import tableUtils from "../../componts/tableUtils.vue";
 import svgUtils from "../../componts/svgUtils.vue";
+import iframeUtils from "../../componts/iframeUtils.vue";
+import pdfUtils from "../../componts/pdfUtils.vue";
+import mediaUtils from "../../componts/mediaUtils.vue";
+import attachUtils from "../../componts/attachUtils.vue";
 import { useCodeBlockFold } from "../plugins/code-block-fold.mjs";
 
 /** @type {import('vitepress').Theme} */
@@ -25,5 +29,9 @@ export default {
     app.component("imgUtils", imgUtils);
     app.component("tableUtils", tableUtils);
     app.component("svgUtils", svgUtils);
+    app.component("iframeUtils", iframeUtils);
+    app.component("pdfUtils", pdfUtils);
+    app.component("mediaUtils", mediaUtils);
+    app.component("attachUtils", attachUtils);
   },
 };

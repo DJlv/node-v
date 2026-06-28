@@ -1,5 +1,5 @@
 ## CMake
-:::info 创建简单的CMake步骤
+:::details 创建简单的CMake步骤
 ```cmake
 1. 创建cmake最低版本要求
 cmake_minimum_required(VERSION 3.10)

@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { ASSET_MARKER } from "./docs-asset-url.js";
 
-const COLOCATED_DIRS = ["img", "excel"];
+const COLOCATED_DIRS = ["img", "excel", "files"];
 
 const ALLOWED_EXT = new Set([
   ".png",
@@ -16,6 +16,24 @@ const ALLOWED_EXT = new Set([
   ".xlsx",
   ".xlsm",
   ".xls",
+  ".pdf",
+  ".mp4",
+  ".webm",
+  ".ogg",
+  ".mov",
+  ".mp3",
+  ".wav",
+  ".m4a",
+  ".flac",
+  ".zip",
+  ".rar",
+  ".7z",
+  ".tar",
+  ".gz",
+  ".doc",
+  ".docx",
+  ".ppt",
+  ".pptx",
 ]);
 
 const MIME = {
@@ -30,6 +48,26 @@ const MIME = {
   ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   ".xlsm": "application/vnd.ms-excel.sheet.macroEnabled.12",
   ".xls": "application/vnd.ms-excel",
+  ".pdf": "application/pdf",
+  ".mp4": "video/mp4",
+  ".webm": "video/webm",
+  ".ogg": "audio/ogg",
+  ".mov": "video/quicktime",
+  ".mp3": "audio/mpeg",
+  ".wav": "audio/wav",
+  ".m4a": "audio/mp4",
+  ".flac": "audio/flac",
+  ".zip": "application/zip",
+  ".rar": "application/vnd.rar",
+  ".7z": "application/x-7z-compressed",
+  ".tar": "application/x-tar",
+  ".gz": "application/gzip",
+  ".doc": "application/msword",
+  ".docx":
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  ".ppt": "application/vnd.ms-powerpoint",
+  ".pptx":
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
 };
 
 export function walkCoLocatedAssets(dir, files = []) {
@@ -103,10 +141,14 @@ export function findCoLocatedAsset(projectRoot, urlPath) {
     if (ALLOWED_EXT.has(ext)) return directPath;
   }
 
-  if (!/\/(img|excel)\//.test(withoutLeadingSlash)) return null;
+  if (!/\/(img|excel|files)\//.test(withoutLeadingSlash)) return null;
 
   const fileName = path.basename(withoutLeadingSlash);
-  const subDir = withoutLeadingSlash.includes("/excel/") ? "excel" : "img";
+  const subDir = withoutLeadingSlash.includes("/excel/")
+    ? "excel"
+    : withoutLeadingSlash.includes("/files/")
+      ? "files"
+      : "img";
   const docsRoot = path.join(projectRoot, "docs");
   const matches = walkCoLocatedAssets(docsRoot).filter(
     (filePath) =>
@@ -177,7 +219,7 @@ export function createDocsAssetMiddleware(base, projectRoot) {
       withoutBase = withoutBase.replace(/^\//, "");
     }
 
-    if (!/\/(img|excel)\//.test(withoutBase)) return next();
+    if (!/\/(img|excel|files)\//.test(withoutBase)) return next();
 
     const filePath = findCoLocatedAsset(projectRoot, withoutBase);
     if (!filePath) return next();

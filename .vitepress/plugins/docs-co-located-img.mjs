@@ -6,7 +6,7 @@ import {
   installDocsAssetMiddleware,
 } from "../../utils/sync-docs-assets.mjs";
 
-// dev/preview 直接从 docs/**/img、docs/**/excel 读取；build 时复制到 dist
+// dev/preview 直接从 docs/**/{img,excel,files} 读取；build 时复制到 dist
 export function docsCoLocatedImgPlugin(base = "/node-v/") {
   const pluginDir = path.dirname(fileURLToPath(import.meta.url));
   const projectRoot = path.resolve(pluginDir, "../..");
@@ -14,10 +14,10 @@ export function docsCoLocatedImgPlugin(base = "/node-v/") {
   const attachMiddleware = (server) => {
     const count = countCoLocatedAssets(projectRoot);
     if (count > 0) {
-      console.log(`[docs-assets] serving ${count} files from docs/**/img and docs/**/excel`);
+      console.log(`[docs-assets] serving ${count} files from docs/**/{img,excel,files}`);
     } else {
       console.warn(
-        "[docs-assets] no img/excel files under docs/**/img or docs/**/excel",
+        "[docs-assets] no asset files under docs/**/{img,excel,files}",
       );
     }
 

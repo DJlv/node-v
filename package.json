@@ -6,7 +6,7 @@
     "vuepress-plugin-auto-sidebar": "^2.3.2"
   },
   "scripts": {
-    "docs:prep": "node utils/prep-docs.mjs",
+    "docs:validate": "node utils/validate-docs-assets.mjs --strict",
     "docs:dev": "node utils/prep-docs.mjs && vitepress dev",
     "docs:build": "node utils/prep-docs.mjs && vitepress build",
     "docs:preview": "vitepress preview"

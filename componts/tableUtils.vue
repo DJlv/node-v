@@ -10,11 +10,36 @@
       {{ error }}
     </div>
 
-    <div v-else-if="!rows.length" class="table-utils__status">
-      工作表「{{ sheetName }}」暂无数据
-    </div>
+    <template v-else>
+      <div v-if="rows.length || sheetNames.length > 1" class="table-utils__toolbar">
+        <input
+          v-model="searchText"
+          class="table-utils__search"
+          type="search"
+          placeholder="搜索表格…"
+        />
+        <button type="button" class="table-utils__btn" @click="exportCsv">
+          导出 CSV
+        </button>
+        <label v-if="sheetNames.length > 1" class="table-utils__sheet-label">
+          工作表
+          <select
+            v-model="activeSheet"
+            class="table-utils__sheet-select"
+            @change="onSheetChange"
+          >
+            <option v-for="name in sheetNames" :key="name" :value="name">
+              {{ name }}
+            </option>
+          </select>
+        </label>
+      </div>
 
-    <div v-else class="table-utils__frame">
+      <div v-if="!rows.length" class="table-utils__status">
+        工作表「{{ activeSheet || sheetName }}」暂无数据
+      </div>
+
+      <div v-else class="table-utils__frame table-utils__frame--sticky">
       <!-- 内容区：禁止任何滚动条，横向位移由底部滚动条驱动 -->
       <div ref="mainRef" class="table-utils__main">
         <div class="table-utils__head-clip">
@@ -38,8 +63,17 @@
                       v-for="(col, index) in headers"
                       :key="`h-${index}`"
                       :style="cellStyle(index)"
+                      class="table-utils__th-sortable"
+                      :class="{
+                        'table-utils__th-sorted': sortCol === index,
+                        'table-utils__cell-sticky': index === 0,
+                      }"
+                      @click="toggleSort(index)"
                     >
                       {{ formatCell(col) }}
+                      <span v-if="sortCol === index" class="table-utils__sort-icon">
+                        {{ sortAsc ? "↑" : "↓" }}
+                      </span>
                     </th>
                   </tr>
                 </thead>
@@ -66,13 +100,21 @@
                       />
                     </colgroup>
                     <tbody>
-                      <tr v-for="(row, rowIndex) in rows" :key="`r-${rowIndex}`">
+                      <tr v-for="(row, rowIndex) in displayRows" :key="`r-${rowIndex}`">
                         <td
                           v-for="(cell, colIndex) in row"
                           :key="`c-${rowIndex}-${colIndex}`"
                           :style="cellStyle(colIndex)"
+                          :class="{ 'table-utils__cell-sticky': colIndex === 0 }"
                         >
-                          {{ formatCell(cell) }}
+                          <a
+                            v-if="isLink(cell)"
+                            :href="cellHref(cell)"
+                            target="_blank"
+                            rel="noopener"
+                            class="table-utils__link"
+                          >{{ formatCell(cell) }}</a>
+                          <template v-else>{{ formatCell(cell) }}</template>
                         </td>
                       </tr>
                     </tbody>
@@ -94,12 +136,12 @@
         <div ref="hScrollInnerRef" class="table-utils__hscroll-inner" />
       </div>
     </div>
+    </template>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import * as xlsx from "xlsx";
 
 import { buildDocsAssetUrl } from "../utils/docs-asset-url.js";
 
@@ -120,6 +162,13 @@ export default {
       syncingScroll: false,
       resizeObserver: null,
       loadingSheet: false,
+      xlsxLib: null,
+      workbook: null,
+      sheetNames: [],
+      activeSheet: "",
+      searchText: "",
+      sortCol: -1,
+      sortAsc: true,
     };
   },
   computed: {
@@ -153,8 +202,37 @@ export default {
       }
       return style;
     },
+    displayRows() {
+      let result = this.rows;
+      const query = this.searchText.trim().toLowerCase();
+      if (query) {
+        result = result.filter((row) =>
+          row.some((cell) => String(cell ?? "").toLowerCase().includes(query)),
+        );
+      }
+      if (this.sortCol >= 0) {
+        const col = this.sortCol;
+        result = [...result].sort((a, b) => {
+          const av = String(a[col] ?? "");
+          const bv = String(b[col] ?? "");
+          const cmp = av.localeCompare(bv, "zh-CN", { numeric: true });
+          return this.sortAsc ? cmp : -cmp;
+        });
+      }
+      return result;
+    },
   },
   watch: {
+    urls() {
+      this.loadSheet();
+    },
+    sheetName(next) {
+      if (!this.workbook || !next) return;
+      if (this.sheetNames.includes(next)) {
+        this.activeSheet = next;
+        this.applySheet(next);
+      }
+    },
     rows() {
       if (this.loadingSheet) return;
       this.colWidths = [];
@@ -174,6 +252,13 @@ export default {
     this.resizeObserver?.disconnect();
   },
   methods: {
+    async ensureXlsx() {
+      if (!this.xlsxLib) {
+        this.xlsxLib = await import("xlsx");
+      }
+      return this.xlsxLib;
+    },
+
     formatCell(value) {
       if (value === null || value === undefined) return "";
       const text = String(value).trim();
@@ -221,6 +306,7 @@ export default {
     },
 
     buildGridFromSheet(sheet) {
+      const xlsx = this.xlsxLib;
       const positions = [];
 
       for (const key of Object.keys(sheet)) {
@@ -440,6 +526,96 @@ export default {
       return header[0] === 0x50 && header[1] === 0x4b;
     },
 
+    onSheetChange() {
+      this.applySheet(this.activeSheet);
+    },
+
+    toggleSort(index) {
+      if (this.sortCol === index) {
+        this.sortAsc = !this.sortAsc;
+      } else {
+        this.sortCol = index;
+        this.sortAsc = true;
+      }
+    },
+
+    isLink(value) {
+      const text = String(value ?? "").trim();
+      return /^https?:\/\//i.test(text);
+    },
+
+    cellHref(value) {
+      return String(value ?? "").trim();
+    },
+
+    exportCsv() {
+      if (!this.headers.length) return;
+      const escape = (value) => `"${String(value ?? "").replace(/"/g, '""')}"`;
+      const lines = [this.headers.map(escape).join(",")];
+      for (const row of this.displayRows) {
+        lines.push(row.map(escape).join(","));
+      }
+      const blob = new Blob([`\uFEFF${lines.join("\n")}`], {
+        type: "text/csv;charset=utf-8",
+      });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      const baseName = this.urls.split("/").pop()?.replace(/\.[^.]+$/, "") || "table";
+      anchor.href = url;
+      anchor.download = `${baseName}-${this.activeSheet || "sheet"}.csv`;
+      anchor.click();
+      URL.revokeObjectURL(url);
+    },
+
+    applySheet(sheetName) {
+      if (!this.workbook || !sheetName) return;
+
+      const sheet = this.workbook.Sheets[sheetName];
+      if (!sheet) {
+        this.error = `未找到工作表「${sheetName}」，可用：${this.sheetNames.join("、") || "无"}`;
+        this.rows = [];
+        this.headers = [];
+        return;
+      }
+
+      this.error = "";
+      this.searchText = "";
+      this.sortCol = -1;
+      this.sortAsc = true;
+      const { rows: gridRows, colCount } = this.buildGridFromSheet(sheet);
+
+      if (!gridRows.length) {
+        this.headers = [];
+        this.rows = [];
+        this.colWidths = [];
+        return;
+      }
+
+      const padRow = (row) => {
+        const cells = Array.isArray(row) ? row.map((cell) => cell ?? "") : [];
+        while (cells.length < colCount) cells.push("");
+        return cells.slice(0, colCount);
+      };
+
+      const headerRowIndex = this.findHeaderRowIndex(gridRows, padRow);
+      const headerRow = padRow(gridRows[headerRowIndex]);
+      const bodyRows = gridRows.slice(headerRowIndex + 1);
+
+      this.loadingSheet = true;
+      this.headers = headerRow.map((cell, index) => {
+        const text = this.formatCell(cell);
+        return text === "—" ? `列 ${index + 1}` : text;
+      });
+      this.rows = bodyRows
+        .filter((row) => padRow(row).some((cell) => String(cell ?? "").trim() !== ""))
+        .map((row) => padRow(row).map((cell) => this.formatCell(cell)));
+      this.colWidths = this.computeColWidths();
+      this.loadingSheet = false;
+      this.scrollX = 0;
+
+      this.$nextTick(() => this.updateLayout());
+    },
+
     async loadSheet() {
       this.loading = true;
       this.error = "";
@@ -447,6 +623,9 @@ export default {
       this.rows = [];
       this.colWidths = [];
       this.scrollX = 0;
+      this.workbook = null;
+      this.sheetNames = [];
+      this.activeSheet = "";
 
       try {
         const response = await axios.get(this.excelUrl, {
@@ -485,48 +664,21 @@ export default {
           return;
         }
 
+        const xlsx = await this.ensureXlsx();
         const workbook = xlsx.read(buffer, { type: "array" });
-        let matchedSheet = workbook.SheetNames.find(
-          (name) => name === this.sheetName,
-        );
+        this.workbook = workbook;
+        this.sheetNames = workbook.SheetNames;
 
-        if (!matchedSheet && workbook.SheetNames.length) {
-          matchedSheet = workbook.SheetNames[0];
-        }
-
-        if (!matchedSheet) {
-          this.error = `未找到工作表「${this.sheetName}」，可用：${workbook.SheetNames.join("、") || "无"}`;
+        if (!this.sheetNames.length) {
+          this.error = `工作簿中没有可用工作表：${this.urls}`;
           return;
         }
 
-        const sheet = workbook.Sheets[matchedSheet];
-        const { rows: gridRows, colCount } = this.buildGridFromSheet(sheet);
-
-        if (!gridRows.length) return;
-
-        const padRow = (row) => {
-          const cells = Array.isArray(row) ? row.map((cell) => cell ?? "") : [];
-          while (cells.length < colCount) cells.push("");
-          return cells.slice(0, colCount);
-        };
-
-        const headerRowIndex = this.findHeaderRowIndex(gridRows, padRow);
-        const headerRow = padRow(gridRows[headerRowIndex]);
-        const bodyRows = gridRows.slice(headerRowIndex + 1);
-
-        this.loadingSheet = true;
-        this.headers = headerRow.map((cell, index) => {
-          const text = this.formatCell(cell);
-          return text === "—" ? `列 ${index + 1}` : text;
-        });
-        this.rows = bodyRows
-          .filter((row) => padRow(row).some((cell) => String(cell ?? "").trim() !== ""))
-          .map((row) => padRow(row).map((cell) => this.formatCell(cell)));
-        this.colWidths = this.computeColWidths();
-        this.loadingSheet = false;
-        this.scrollX = 0;
-
-        this.$nextTick(() => this.updateLayout());
+        const preferred = this.sheetNames.includes(this.sheetName)
+          ? this.sheetName
+          : this.sheetNames[0];
+        this.activeSheet = preferred;
+        this.applySheet(preferred);
       } catch (err) {
         this.error = `表格加载失败：${err?.message || "请检查文件路径与网络"}`;
       } finally {
@@ -545,6 +697,106 @@ export default {
   margin: 1rem 0;
   font-size: 14px;
   line-height: 1.5;
+}
+
+.table-utils__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.table-utils__search {
+  flex: 1 1 180px;
+  min-width: 140px;
+  max-width: 280px;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 6px;
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
+  font-size: 13px;
+}
+
+.table-utils__btn {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 6px;
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.table-utils__btn:hover {
+  border-color: var(--vp-c-brand-1);
+  color: var(--vp-c-brand-1);
+}
+
+.table-utils__th-sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.table-utils__th-sortable:hover {
+  background: color-mix(in srgb, var(--vp-c-brand-soft) 40%, var(--vp-c-bg));
+}
+
+.table-utils__sort-icon {
+  margin-left: 0.25rem;
+  color: var(--vp-c-brand-1);
+  font-size: 12px;
+}
+
+.table-utils__link {
+  color: var(--vp-c-brand-1);
+  text-decoration: underline;
+  word-break: break-all;
+}
+
+.table-utils__frame--sticky .table-utils__cell-sticky {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  background: var(--vp-c-bg);
+  box-shadow: 1px 0 0 var(--vp-c-divider);
+}
+
+.table-utils__frame--sticky .table-utils__table--head .table-utils__cell-sticky {
+  background: color-mix(in srgb, var(--vp-c-bg-soft) 55%, #fff 45%);
+  z-index: 4;
+}
+
+@media (max-width: 768px) {
+  .table-utils__frame--sticky .table-utils__cell-sticky {
+    position: sticky;
+    left: 0;
+  }
+}
+
+.table-utils__sheet-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--vp-c-text-2);
+  font-size: 13px;
+}
+
+.table-utils__sheet-select {
+  min-width: 160px;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 6px;
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
+  font-size: 13px;
+}
+
+.table-utils__sheet-select:focus {
+  outline: 2px solid color-mix(in srgb, var(--vp-c-brand-1) 35%, transparent);
+  border-color: var(--vp-c-brand-1);
 }
 
 .table-utils__status {
