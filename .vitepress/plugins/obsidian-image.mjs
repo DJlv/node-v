@@ -102,9 +102,31 @@ function defaultSheetName(target, sheetOverride) {
   return path.basename(target.trim(), path.extname(target.trim()));
 }
 
+function parseSheetDirective(pipeValue) {
+  const trimmed = String(pipeValue || "").trim();
+  if (trimmed.startsWith("@svg:")) {
+    return { mode: "svg", sheet: trimmed.slice(5).trim() };
+  }
+  return { mode: "table", sheet: trimmed };
+}
+
 function toTableUtils(target, sheetName, mdDir) {
   const assetPath = resolveCoLocatedAsset(mdDir, "excel", target);
   return `<tableUtils urls="${escapeHtml(assetPath)}" sheetName="${escapeHtml(defaultSheetName(target, sheetName))}"></tableUtils>`;
+}
+
+function toSvgUtils(target, sheetName, mdDir) {
+  const assetPath = resolveCoLocatedAsset(mdDir, "excel", target);
+  const sheet = sheetName || defaultSheetName(target, "");
+  return `<svgUtils urls="${escapeHtml(assetPath)}" sheet-name="${escapeHtml(sheet)}"></svgUtils>`;
+}
+
+function renderExcelTarget(target, pipeValue, mdDir) {
+  const { mode, sheet } = parseSheetDirective(pipeValue);
+  if (mode === "svg") {
+    return toSvgUtils(target, sheet, mdDir);
+  }
+  return toTableUtils(target, sheet, mdDir);
 }
 
 function toPdfUtils(target, title, mdDir) {
@@ -134,7 +156,7 @@ function toPageLink(target, label, mdDir) {
 function renderWikiEmbed(target, pipeValue, mdDir) {
   switch (classifyWikiTarget(target)) {
     case "table":
-      return toTableUtils(target, pipeValue, mdDir);
+      return renderExcelTarget(target, pipeValue, mdDir);
     case "pdf":
       return toPdfUtils(target, pipeValue, mdDir);
     case "video":
@@ -151,7 +173,7 @@ function renderWikiEmbed(target, pipeValue, mdDir) {
 function renderWikiLink(target, pipeValue, mdDir) {
   switch (classifyWikiTarget(target)) {
     case "table":
-      return toTableUtils(target, pipeValue, mdDir);
+      return renderExcelTarget(target, pipeValue, mdDir);
     case "attach":
       return toAttachUtils(target, pipeValue, mdDir);
     default:
