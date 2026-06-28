@@ -1,6 +1,7 @@
 <!-- 从 docs 同目录 excel 子目录读取 Excel 并渲染为表格 -->
 <template>
-  <div class="table-utils">
+  <Teleport to="body" :disabled="!expanded">
+    <div class="table-utils" :class="{ 'table-utils--expanded': expanded }">
     <div v-if="loading" class="table-utils__status">
       <span class="table-utils__spinner" aria-hidden="true" />
       正在加载表格…
@@ -11,6 +12,35 @@
     </div>
 
     <template v-else>
+      <div
+        v-if="expanded"
+        class="table-utils__lightbox-bar"
+      >
+        <span class="table-utils__lightbox-title">
+          {{ sheetTitle }}
+        </span>
+        <div class="table-utils__zoom-group">
+          <button type="button" class="table-utils__btn" title="缩小" @click="zoomOut">−</button>
+          <span class="table-utils__zoom-label">{{ zoomPercent }}%</span>
+          <button type="button" class="table-utils__btn" title="放大" @click="zoomIn">+</button>
+          <button type="button" class="table-utils__btn" title="重置缩放" @click="resetZoom">
+            重置
+          </button>
+        </div>
+        <button
+          type="button"
+          class="table-utils__btn table-utils__btn--close"
+          title="关闭 (Esc)"
+          @click="closeExpanded"
+        >
+          关闭
+        </button>
+      </div>
+
+      <div
+        class="table-utils__content"
+        :class="{ 'table-utils__content--expanded': expanded }"
+      >
       <div v-if="rows.length || sheetNames.length > 1" class="table-utils__toolbar">
         <input
           v-model="searchText"
@@ -20,6 +50,15 @@
         />
         <button type="button" class="table-utils__btn" @click="exportCsv">
           导出 CSV
+        </button>
+        <button
+          v-if="!expanded"
+          type="button"
+          class="table-utils__btn table-utils__btn--expand"
+          title="全屏放大查看"
+          @click="openExpanded"
+        >
+          放大
         </button>
         <label v-if="sheetNames.length > 1" class="table-utils__sheet-label">
           工作表
@@ -39,7 +78,12 @@
         工作表「{{ activeSheet || sheetName }}」暂无数据
       </div>
 
-      <div v-else class="table-utils__frame table-utils__frame--sticky">
+      <div
+        v-else
+        ref="frameRef"
+        class="table-utils__frame table-utils__frame--sticky"
+        :class="{ 'table-utils__frame--expanded': expanded }"
+      >
       <!-- 内容区：禁止任何滚动条，横向位移由底部滚动条驱动 -->
       <div ref="mainRef" class="table-utils__main">
         <div class="table-utils__head-clip">
@@ -67,6 +111,7 @@
                       :class="{
                         'table-utils__th-sorted': sortCol === index,
                         'table-utils__cell-sticky': index === 0,
+                        'table-utils__cell-wrap': colWrapFlags[index],
                       }"
                       @click="toggleSort(index)"
                     >
@@ -105,10 +150,32 @@
                           v-for="(cell, colIndex) in row"
                           :key="`c-${rowIndex}-${colIndex}`"
                           :style="cellStyle(colIndex)"
-                          :class="{ 'table-utils__cell-sticky': colIndex === 0 }"
+                          :class="{
+                            'table-utils__cell-sticky': colIndex === 0,
+                            'table-utils__cell-wrap': colWrapFlags[colIndex],
+                          }"
                         >
+                          <template v-if="hasWikiCellSyntax(cell)">
+                            <template
+                              v-for="(part, partIndex) in parseCellParts(cell)"
+                              :key="`${rowIndex}-${colIndex}-${partIndex}`"
+                            >
+                              <span v-if="part.type === 'text'">{{ part.text }}</span>
+                              <a
+                                v-else
+                                :href="part.href"
+                                :target="part.external ? '_blank' : undefined"
+                                :rel="part.external ? 'noopener' : undefined"
+                                class="table-utils__link"
+                                :class="{
+                                  'table-utils__link--wiki': part.kind === 'wiki',
+                                  'table-utils__link--embed': part.kind === 'embed',
+                                }"
+                              >{{ part.label }}</a>
+                            </template>
+                          </template>
                           <a
-                            v-if="isLink(cell)"
+                            v-else-if="isLink(cell)"
                             :href="cellHref(cell)"
                             target="_blank"
                             rel="noopener"
@@ -135,15 +202,22 @@
       >
         <div ref="hScrollInnerRef" class="table-utils__hscroll-inner" />
       </div>
-    </div>
+      </div>
+      </div>
     </template>
-  </div>
+    </div>
+  </Teleport>
 </template>
 
 <script>
 import axios from "axios";
 
 import { buildDocsAssetUrl } from "../utils/docs-asset-url.js";
+import {
+  hasWikiCellSyntax,
+  mdDirFromTableUrls,
+  parseCellParts as buildCellParts,
+} from "../utils/wiki-cell-link.js";
 
 export default {
   props: {
@@ -169,9 +243,29 @@ export default {
       searchText: "",
       sortCol: -1,
       sortAsc: true,
+      expanded: false,
+      zoomScale: 1,
+      colWrapFlags: [],
     };
   },
   computed: {
+    zoomPercent() {
+      return Math.round(this.zoomScale * 100);
+    },
+    sheetTitle() {
+      const base = this.urls.split("/").pop()?.replace(/\.[^.]+$/, "") || "表格";
+      const sheet = this.activeSheet || this.sheetName;
+      return sheet ? `${base} · ${sheet}` : base;
+    },
+    mdDir() {
+      return mdDirFromTableUrls(this.urls);
+    },
+    cellLinkOptions() {
+      return {
+        base: import.meta.env.BASE_URL || "/",
+        dev: import.meta.env.DEV,
+      };
+    },
     excelUrl() {
       return buildDocsAssetUrl(
         this.urls,
@@ -196,7 +290,10 @@ export default {
       return { width, minWidth: width };
     },
     panStyle() {
-      const style = { transform: `translate3d(-${this.scrollX}px, 0, 0)` };
+      const style = {
+        transform: `translate3d(-${this.scrollX}px, 0, 0) scale(${this.zoomScale})`,
+        transformOrigin: "top left",
+      };
       if (this.colSynced) {
         style.width = `${this.tableTotalWidth}px`;
       }
@@ -243,6 +340,26 @@ export default {
       this.colWidths = [];
       this.$nextTick(() => this.updateLayout());
     },
+    expanded(value) {
+      if (value) {
+        document.body.style.overflow = "hidden";
+        document.addEventListener("keydown", this.onExpandedKeydown);
+        window.addEventListener("resize", this.onExpandedResize);
+        this.$nextTick(() => {
+          this.updateLayout();
+          requestAnimationFrame(() => this.updateLayout());
+        });
+      } else {
+        document.body.style.overflow = "";
+        document.removeEventListener("keydown", this.onExpandedKeydown);
+        window.removeEventListener("resize", this.onExpandedResize);
+        this.zoomScale = 1;
+        this.$nextTick(() => this.updateLayout());
+      }
+    },
+    zoomScale() {
+      this.$nextTick(() => this.updateLayout());
+    },
   },
   mounted() {
     this.loadSheet();
@@ -250,8 +367,16 @@ export default {
   },
   beforeUnmount() {
     this.resizeObserver?.disconnect();
+    document.body.style.overflow = "";
+    document.removeEventListener("keydown", this.onExpandedKeydown);
+    window.removeEventListener("resize", this.onExpandedResize);
   },
   methods: {
+    onExpandedResize() {
+      if (!this.expanded) return;
+      this.updateLayout();
+    },
+
     async ensureXlsx() {
       if (!this.xlsxLib) {
         this.xlsxLib = await import("xlsx");
@@ -263,6 +388,14 @@ export default {
       if (value === null || value === undefined) return "";
       const text = String(value).trim();
       return text === "" ? "—" : text;
+    },
+
+    hasWikiCellSyntax(value) {
+      return hasWikiCellSyntax(value);
+    },
+
+    parseCellParts(value) {
+      return buildCellParts(value, this.mdDir, this.cellLinkOptions);
     },
 
     colStyle(width) {
@@ -283,25 +416,123 @@ export default {
 
     computeColWidths() {
       const sampleSize = Math.min(this.rows.length, 100);
-      const wrapWidth = 320;
-      const maxSingleLine = 640;
+      const MIN_WIDTH = 56;
+      const MIN_NUMERIC = 52;
+      const MAX_NUMERIC = 108;
+      const MAX_WRAP = 260;
+      const MAX_SINGLE = 180;
+      const PADDING = 24;
+      const wrapFlags = [];
 
-      return this.headers.map((header, index) => {
-        let maxWidth = this.estimateTextWidth(header);
-        let maxChars = String(header ?? "").length;
+      const widths = this.headers.map((header, index) => {
+        if (this.isMostlyNumericColumn(index, sampleSize)) {
+          wrapFlags[index] = false;
+          let displayWidth = this.estimateDisplayWidth(header);
+          for (let rowIndex = 0; rowIndex < sampleSize; rowIndex += 1) {
+            displayWidth = Math.max(
+              displayWidth,
+              this.estimateDisplayWidth(this.rows[rowIndex][index]),
+            );
+          }
+          return Math.max(
+            MIN_NUMERIC,
+            Math.min(MAX_NUMERIC, Math.ceil(displayWidth) + 16),
+          );
+        }
+
+        let displayWidth = this.estimateDisplayWidth(header);
+        let preferWrap = this.shouldWrapCell(header);
 
         for (let rowIndex = 0; rowIndex < sampleSize; rowIndex += 1) {
           const cell = this.rows[rowIndex][index];
-          const text = String(cell ?? "");
-          maxWidth = Math.max(maxWidth, this.estimateTextWidth(cell));
-          maxChars = Math.max(maxChars, text.length);
+          if (this.shouldWrapCell(cell)) {
+            preferWrap = true;
+            displayWidth = Math.max(displayWidth, this.estimateDisplayWidth(cell));
+          } else {
+            displayWidth = Math.max(displayWidth, this.estimateDisplayWidth(cell));
+          }
         }
 
-        const fitted = Math.max(Math.ceil(maxWidth) + 28, 80);
-        if (maxChars > 32 || fitted > 280) {
-          return wrapWidth;
+        wrapFlags[index] = preferWrap;
+
+        if (preferWrap) {
+          return Math.max(
+            MIN_WIDTH,
+            Math.min(MAX_WRAP, Math.ceil(displayWidth) + PADDING),
+          );
         }
-        return Math.min(fitted, maxSingleLine);
+
+        return Math.max(
+          MIN_WIDTH,
+          Math.min(MAX_SINGLE, Math.ceil(displayWidth) + PADDING),
+        );
+      });
+
+      this.colWrapFlags = wrapFlags;
+      return widths;
+    },
+
+    shouldWrapCell(value) {
+      const text = String(value ?? "").trim();
+      if (!text || text === "—") return false;
+      return text.length > 32 || this.isLink(text) || hasWikiCellSyntax(text);
+    },
+
+    estimateDisplayWidth(value) {
+      const text = String(value ?? "").trim();
+      if (!text || text === "—") return 0;
+      if (this.isLink(text)) return 200;
+      if (text.length > 40) return 200;
+      return this.estimateTextWidth(text);
+    },
+
+    isMostlyNumericColumn(index, sampleSize) {
+      let numeric = 0;
+      let filled = 0;
+
+      const header = String(this.headers[index] ?? "").trim();
+      if (header && header !== "—") {
+        filled += 1;
+        if (/^-?\d+\.?\d*$/.test(header)) numeric += 1;
+      }
+
+      for (let rowIndex = 0; rowIndex < sampleSize; rowIndex += 1) {
+        const text = String(this.rows[rowIndex][index] ?? "").trim();
+        if (!text || text === "—") continue;
+        filled += 1;
+        if (/^-?\d+\.?\d*$/.test(text)) numeric += 1;
+      }
+
+      return filled > 0 && numeric / filled >= 0.8;
+    },
+
+    fitColWidthsToContainer() {
+      const main = this.$refs.mainRef;
+      if (!main || !this.colWidths.length) return;
+
+      const containerWidth = main.clientWidth;
+      if (containerWidth <= 0) return;
+
+      const total = this.colWidths.reduce((sum, width) => sum + width, 0);
+      const target = Math.max(containerWidth - 1, total);
+      if (total >= target) return;
+
+      const extra = target - total;
+      const sampleSize = Math.min(this.rows.length, 100);
+      const weights = this.colWidths.map((width, index) => {
+        const base = Math.max(width, 56);
+        return this.isMostlyNumericColumn(index, sampleSize) ? base * 0.4 : base;
+      });
+      const weightSum = weights.reduce((sum, weight) => sum + weight, 0) || 1;
+
+      let assigned = 0;
+      this.colWidths = this.colWidths.map((width, index) => {
+        if (index === this.colWidths.length - 1) {
+          return width + extra - assigned;
+        }
+        const add = Math.floor(extra * (weights[index] / weightSum));
+        assigned += add;
+        return width + add;
       });
     },
 
@@ -413,6 +644,7 @@ export default {
       const bodyTable = this.$refs.bodyTableRef;
       if (!this.resizeObserver) return;
       this.resizeObserver.disconnect();
+      if (this.expanded && this.$el) this.resizeObserver.observe(this.$el);
       if (main) this.resizeObserver.observe(main);
       if (bodyWrap) this.resizeObserver.observe(bodyWrap);
       if (bodyTable) this.resizeObserver.observe(bodyTable);
@@ -427,17 +659,40 @@ export default {
       return width;
     },
 
+    syncExpandedFrameHeight(frame) {
+      frame.style.height = "";
+      frame.style.maxHeight = "";
+      frame.style.flex = "";
+      frame.style.minHeight = "";
+    },
+
     syncFrameHeight() {
-      const frame = this.$el?.querySelector(".table-utils__frame");
+      const frame = this.$refs.frameRef || this.$el?.querySelector(".table-utils__frame");
       const headTable = this.$refs.headTableRef;
       const bodyTable = this.$refs.bodyTableRef;
       const hScroll = this.$refs.hScrollRef;
-      if (!frame || !headTable || !bodyTable) return;
+      if (!frame) return;
 
-      const maxHeight = Math.min(480, window.innerHeight * 0.7);
+      if (this.expanded) {
+        if (headTable && bodyTable) this.syncExpandedFrameHeight(frame);
+        return;
+      }
+
+      frame.style.flex = "";
+      frame.style.minHeight = "";
+      if (!headTable || !bodyTable) return;
+
       const hScrollHeight = this.hasHorizontalScroll ? hScroll?.offsetHeight || 12 : 0;
-      const naturalHeight = headTable.offsetHeight + bodyTable.offsetHeight + hScrollHeight + 2;
+      const tableHeight = (headTable.offsetHeight + bodyTable.offsetHeight) * this.zoomScale;
+      const naturalHeight = tableHeight + hScrollHeight + 2;
+
+      frame.style.maxHeight = "";
+      const maxHeight = Math.min(480, window.innerHeight * 0.7);
       frame.style.height = `${Math.min(Math.max(naturalHeight, 120), maxHeight)}px`;
+    },
+
+    scaledContentWidth(rawWidth) {
+      return rawWidth * this.zoomScale;
     },
 
     syncScrollMetrics() {
@@ -447,9 +702,10 @@ export default {
       const hScroll = this.$refs.hScrollRef;
       if (!main || !bodyTable || !inner) return;
 
-      const contentWidth = this.colSynced
+      const rawWidth = this.colSynced
         ? this.tableTotalWidth
         : bodyTable.scrollWidth;
+      const contentWidth = this.scaledContentWidth(rawWidth);
 
       inner.style.width = `${contentWidth}px`;
       this.hasHorizontalScroll = contentWidth > main.clientWidth + 1;
@@ -471,6 +727,7 @@ export default {
       this.$nextTick(() => {
         if (this.headers.length) {
           this.colWidths = this.computeColWidths();
+          this.fitColWidthsToContainer();
         }
         this.syncScrollMetrics();
         this.$nextTick(() => {
@@ -483,9 +740,10 @@ export default {
       const main = this.$refs.mainRef;
       if (!main || !this.hasHorizontalScroll) return;
 
-      const contentWidth = this.colSynced
+      const rawWidth = this.colSynced
         ? this.tableTotalWidth
         : this.$refs.bodyTableRef?.scrollWidth || 0;
+      const contentWidth = this.scaledContentWidth(rawWidth);
       const maxScroll = Math.max(0, contentWidth - main.clientWidth);
       this.scrollX = Math.min(maxScroll, Math.max(0, this.scrollX + delta));
 
@@ -497,6 +755,31 @@ export default {
       }
     },
 
+    openExpanded() {
+      this.expanded = true;
+    },
+
+    closeExpanded() {
+      this.expanded = false;
+    },
+
+    onExpandedKeydown(event) {
+      if (event.key === "Escape") this.closeExpanded();
+    },
+
+    zoomIn() {
+      this.zoomScale = Math.min(2, Math.round((this.zoomScale + 0.1) * 10) / 10);
+    },
+
+    zoomOut() {
+      this.zoomScale = Math.max(0.5, Math.round((this.zoomScale - 0.1) * 10) / 10);
+    },
+
+    resetZoom() {
+      this.zoomScale = 1;
+      this.scrollX = 0;
+    },
+
     onHScroll() {
       if (this.syncingScroll) return;
       const hScroll = this.$refs.hScrollRef;
@@ -505,6 +788,13 @@ export default {
     },
 
     onBodyWheel(event) {
+      if (this.expanded && (event.ctrlKey || event.metaKey)) {
+        event.preventDefault();
+        if (event.deltaY < 0) this.zoomIn();
+        else if (event.deltaY > 0) this.zoomOut();
+        return;
+      }
+
       if (!this.hasHorizontalScroll) return;
 
       const horizontal =
@@ -735,6 +1025,92 @@ export default {
   color: var(--vp-c-brand-1);
 }
 
+.table-utils__btn--expand {
+  border-color: color-mix(in srgb, var(--vp-c-brand-1) 35%, var(--vp-c-divider));
+  color: var(--vp-c-brand-1);
+}
+
+.table-utils--expanded {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 16px 20px 20px;
+  box-sizing: border-box;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--vp-c-bg) 88%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.table-utils__lightbox-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  padding: 10px 14px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 10px;
+  background: var(--vp-c-bg-soft);
+}
+
+.table-utils__lightbox-title {
+  flex: 1 1 160px;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.table-utils__zoom-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.table-utils__zoom-label {
+  min-width: 44px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--vp-c-text-2);
+}
+
+.table-utils__btn--close {
+  margin-left: auto;
+  border-color: color-mix(in srgb, var(--vp-c-brand-1) 35%, var(--vp-c-divider));
+  color: var(--vp-c-brand-1);
+}
+
+.table-utils--expanded .table-utils__toolbar {
+  flex-shrink: 0;
+  margin-bottom: 0;
+}
+
+.table-utils__content--expanded {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.table-utils__frame--expanded {
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: none !important;
+  height: auto !important;
+}
+
 .table-utils__th-sortable {
   cursor: pointer;
   user-select: none;
@@ -754,6 +1130,10 @@ export default {
   color: var(--vp-c-brand-1);
   text-decoration: underline;
   word-break: break-all;
+}
+
+.table-utils__link--embed {
+  text-decoration-style: dashed;
 }
 
 .table-utils__frame--sticky .table-utils__cell-sticky {
@@ -845,6 +1225,10 @@ export default {
   background: var(--vp-c-bg);
   box-shadow: 0 1px 2px color-mix(in srgb, var(--vp-c-text-1) 6%, transparent);
   overflow: hidden;
+}
+
+.table-utils--expanded .table-utils__frame {
+  max-height: none !important;
 }
 
 .table-utils__main {
@@ -967,6 +1351,19 @@ export default {
   background-color: color-mix(in srgb, var(--vp-c-bg-soft) 55%, #fff 45%);
 }
 
+.table-utils__cell-wrap {
+  white-space: normal !important;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.table-utils__table--head thead th.table-utils__cell-wrap {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  line-height: 1.35;
+}
+
 .table-utils__table--body tbody td {
   white-space: normal;
   word-break: break-word;
@@ -1078,5 +1475,23 @@ export default {
 .table-utils .table-utils__hscroll::-webkit-scrollbar {
   width: auto !important;
   height: 10px !important;
+}
+
+/* 全屏：flex 撑满剩余视口高度 */
+.table-utils.table-utils--expanded {
+  height: 100vh !important;
+  height: 100dvh !important;
+}
+
+.table-utils.table-utils--expanded .table-utils__content--expanded {
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+}
+
+.table-utils.table-utils--expanded .table-utils__frame {
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  height: auto !important;
 }
 </style>
