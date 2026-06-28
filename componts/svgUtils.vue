@@ -1,24 +1,62 @@
 <template>
-  <div class="svg-utils">
-    <div class="svg-utils__toolbar">
-      <button type="button" class="svg-utils__btn" title="缩小" @click="zoomOut">−</button>
-      <span class="svg-utils__scale">{{ scalePercent }}%</span>
-      <button type="button" class="svg-utils__btn" title="放大" @click="zoomIn">+</button>
-      <button type="button" class="svg-utils__btn" title="重置" @click="resetView">重置</button>
-      <button type="button" class="svg-utils__btn" title="全屏" @click="toggleFullscreen">⛶</button>
-    </div>
-    <div
-      ref="viewportRef"
-      class="svg-utils__viewport"
-      :class="{ 'svg-utils__viewport--dragging': dragging }"
-      @wheel.prevent="onWheel"
-      @dblclick="resetView"
-    >
-      <div ref="canvasRef" class="svg-utils__canvas" :style="canvasStyle">
-        <slot />
+  <Teleport to="body" :disabled="!expanded">
+    <div class="svg-utils" :class="{ 'svg-utils--expanded': expanded }">
+      <div v-if="expanded" class="svg-utils__lightbox-bar">
+        <span class="svg-utils__lightbox-title">SVG 预览</span>
+        <div class="svg-utils__zoom-group">
+          <button type="button" class="svg-utils__btn" title="缩小" @click="zoomOut">−</button>
+          <span class="svg-utils__scale">{{ scalePercent }}%</span>
+          <button type="button" class="svg-utils__btn" title="放大" @click="zoomIn">+</button>
+          <button type="button" class="svg-utils__btn" title="重置" @click="resetView">重置</button>
+        </div>
+        <button
+          type="button"
+          class="svg-utils__btn svg-utils__btn--close"
+          title="关闭 (Esc)"
+          @click="closeExpanded"
+        >
+          关闭
+        </button>
+      </div>
+
+      <div v-if="!expanded" class="svg-utils__toolbar">
+        <button type="button" class="svg-utils__btn" title="缩小" @click="zoomOut">−</button>
+        <span class="svg-utils__scale">{{ scalePercent }}%</span>
+        <button type="button" class="svg-utils__btn" title="放大" @click="zoomIn">+</button>
+        <button type="button" class="svg-utils__btn" title="重置" @click="resetView">重置</button>
+        <button
+          type="button"
+          class="svg-utils__btn svg-utils__btn--expand"
+          title="全屏放大查看"
+          @click="openExpanded"
+        >
+          放大
+        </button>
+      </div>
+
+      <div
+        class="svg-utils__content"
+        :class="{ 'svg-utils__content--expanded': expanded }"
+      >
+        <div
+          ref="viewportRef"
+          class="svg-utils__viewport"
+          :class="{ 'svg-utils__viewport--expanded': expanded, 'svg-utils__viewport--dragging': dragging }"
+          @wheel.prevent="onWheel"
+          @dblclick="resetView"
+        >
+          <div
+            ref="canvasRef"
+            class="svg-utils__canvas"
+            :style="canvasStyle"
+            @mousedown="onPointerDown"
+          >
+            <slot />
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </Teleport>
 </template>
 
 <script>
@@ -31,7 +69,7 @@ export default {
       originLeft: 0,
       originTop: 0,
       scale: 1,
-      isFullscreen: false,
+      expanded: false,
     };
   },
   computed: {
@@ -45,26 +83,29 @@ export default {
       };
     },
   },
+  watch: {
+    expanded(value) {
+      if (value) {
+        document.body.style.overflow = "hidden";
+        document.addEventListener("keydown", this.onExpandedKeydown);
+      } else {
+        document.body.style.overflow = "";
+        document.removeEventListener("keydown", this.onExpandedKeydown);
+      }
+    },
+  },
   mounted() {
-    this.canvas = this.$refs.canvasRef;
-    this.viewport = this.$refs.viewportRef;
-    this.root = this.$el;
-
     this.onPointerDown = this.onPointerDown.bind(this);
     this.onPointerMove = this.onPointerMove.bind(this);
     this.onPointerUp = this.onPointerUp.bind(this);
-    this.onFullscreenChange = this.onFullscreenChange.bind(this);
-
-    this.canvas.addEventListener("mousedown", this.onPointerDown);
     document.addEventListener("mousemove", this.onPointerMove);
     document.addEventListener("mouseup", this.onPointerUp);
-    document.addEventListener("fullscreenchange", this.onFullscreenChange);
   },
   beforeUnmount() {
-    this.canvas?.removeEventListener("mousedown", this.onPointerDown);
     document.removeEventListener("mousemove", this.onPointerMove);
     document.removeEventListener("mouseup", this.onPointerUp);
-    document.removeEventListener("fullscreenchange", this.onFullscreenChange);
+    document.removeEventListener("keydown", this.onExpandedKeydown);
+    document.body.style.overflow = "";
   },
   methods: {
     readOffset(el) {
@@ -78,7 +119,9 @@ export default {
 
     onPointerDown(event) {
       if (event.button !== 0) return;
-      const { left, top } = this.readOffset(this.canvas);
+      const canvas = this.$refs.canvasRef;
+      if (!canvas) return;
+      const { left, top } = this.readOffset(canvas);
       this.originLeft = left;
       this.originTop = top;
       this.pointerX = event.clientX;
@@ -89,10 +132,12 @@ export default {
 
     onPointerMove(event) {
       if (!this.dragging) return;
+      const canvas = this.$refs.canvasRef;
+      if (!canvas) return;
       const deltaX = event.clientX - this.pointerX;
       const deltaY = event.clientY - this.pointerY;
-      this.canvas.style.left = `${this.originLeft + deltaX}px`;
-      this.canvas.style.top = `${this.originTop + deltaY}px`;
+      canvas.style.left = `${this.originLeft + deltaX}px`;
+      canvas.style.top = `${this.originTop + deltaY}px`;
       event.preventDefault();
     },
 
@@ -106,29 +151,32 @@ export default {
     },
 
     zoomIn() {
-      this.scale = Math.min(3, this.scale + 0.15);
+      this.scale = Math.min(3, Math.round((this.scale + 0.15) * 100) / 100);
     },
 
     zoomOut() {
-      this.scale = Math.max(0.3, this.scale - 0.15);
+      this.scale = Math.max(0.3, Math.round((this.scale - 0.15) * 100) / 100);
     },
 
     resetView() {
       this.scale = 1;
-      this.canvas.style.left = "0px";
-      this.canvas.style.top = "0px";
-    },
-
-    toggleFullscreen() {
-      if (!document.fullscreenElement) {
-        this.root.requestFullscreen?.();
-      } else {
-        document.exitFullscreen?.();
+      const canvas = this.$refs.canvasRef;
+      if (canvas) {
+        canvas.style.left = "0px";
+        canvas.style.top = "0px";
       }
     },
 
-    onFullscreenChange() {
-      this.isFullscreen = !!document.fullscreenElement;
+    openExpanded() {
+      this.expanded = true;
+    },
+
+    closeExpanded() {
+      this.expanded = false;
+    },
+
+    onExpandedKeydown(event) {
+      if (event.key === "Escape") this.closeExpanded();
     },
   },
 };
@@ -164,11 +212,74 @@ export default {
   color: var(--vp-c-brand-1);
 }
 
+.svg-utils__btn--expand {
+  border-color: color-mix(in srgb, var(--vp-c-brand-1) 35%, var(--vp-c-divider));
+  color: var(--vp-c-brand-1);
+}
+
 .svg-utils__scale {
   min-width: 48px;
   text-align: center;
   color: var(--vp-c-text-2);
   font-size: 13px;
+}
+
+.svg-utils--expanded {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 16px 20px 20px;
+  box-sizing: border-box;
+  width: auto;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--vp-c-bg) 88%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.svg-utils__lightbox-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  padding: 10px 14px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 10px;
+  background: var(--vp-c-bg-soft);
+}
+
+.svg-utils__lightbox-title {
+  flex: 1 1 120px;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+}
+
+.svg-utils__zoom-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.svg-utils__btn--close {
+  margin-left: auto;
+  border-color: color-mix(in srgb, var(--vp-c-brand-1) 35%, var(--vp-c-divider));
+  color: var(--vp-c-brand-1);
+}
+
+.svg-utils__content--expanded {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .svg-utils__viewport {
@@ -200,6 +311,12 @@ export default {
   box-shadow: 0 1px 2px color-mix(in srgb, var(--vp-c-text-1) 6%, transparent);
 }
 
+.svg-utils__viewport--expanded {
+  flex: 1 1 0;
+  min-height: 0;
+  height: auto;
+}
+
 .svg-utils__viewport--dragging {
   cursor: grabbing;
   user-select: none;
@@ -216,13 +333,23 @@ export default {
   display: block;
   max-width: none;
 }
+</style>
 
-.svg-utils:fullscreen {
-  background: var(--vp-c-bg);
-  padding: 1rem;
+<!-- 全屏 overlay 需覆盖 scoped 限制 -->
+<style>
+.svg-utils.svg-utils--expanded {
+  height: 100vh !important;
+  height: 100dvh !important;
 }
 
-.svg-utils:fullscreen .svg-utils__viewport {
-  height: calc(100vh - 4rem);
+.svg-utils.svg-utils--expanded .svg-utils__content--expanded {
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+}
+
+.svg-utils.svg-utils--expanded .svg-utils__viewport--expanded {
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
 }
 </style>
